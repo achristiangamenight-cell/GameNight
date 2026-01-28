@@ -424,9 +424,6 @@ function setupFeedbackForm() {
         // Scroll to status message
         formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-      
-      // Also show alert as backup
-      alert("Thank you for your feedback!");
     } catch (error) {
       console.error("✗ Error submitting feedback");
       console.error("Error details:", error);
