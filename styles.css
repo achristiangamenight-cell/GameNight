@@ -660,8 +660,7 @@ section {
 }
 
 .survey {
-  background: radial-gradient(circle at top, rgba(246, 204, 101, 0.1), transparent),
-    rgba(8, 6, 7, 0.98);
+  background: #040202;
 }
 
 .survey-content {
