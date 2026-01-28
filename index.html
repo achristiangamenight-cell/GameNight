@@ -20,7 +20,7 @@
       </div>
       <nav class="site-nav">
         <a href="#anonymous-questions">Anonymous Questions</a>
-        <a href="#survey">Event Survey</a>
+        <a href="#survey">Rate Us</a>
         <a href="#team">Meet the Team</a>
         <a href="#past-events">Past Events</a>
       </nav>
@@ -34,17 +34,33 @@
             <p class="hero-subtitle">
               Submit your questions anonymously for the event. Your identity will not be revealed.
             </p>
-            <div class="anonymous-form-container">
-              <iframe
-                src="https://docs.google.com/forms/d/e/1FAIpQLSf9Eaex9Lh6j3xUjADF6gycI5PUjLl0jPGBvVVFZZ8pDP8OMA/viewform?embedded=true"
-                width="100%"
-                height="500"
-                frameborder="0"
-                marginheight="0"
-                marginwidth="0"
-                title="Anonymous Question Submission Form"
-                >Loading…</iframe>
-            </div>
+            <form id="anonymousQuestionForm" class="custom-anonymous-form">
+              <div class="form-field">
+                <label for="anonymousQuestion">
+                  Your Question
+                  <span class="required">*</span>
+                </label>
+                <textarea
+                  id="anonymousQuestion"
+                  name="entry.111111111"
+                  rows="6"
+                  placeholder="Type your question here... Your identity will remain completely anonymous."
+                  required
+                ></textarea>
+                <p class="form-hint">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="M12 8v4M12 16h.01"></path>
+                  </svg>
+                  Your question will be submitted anonymously. No personal information will be collected.
+                </p>
+              </div>
+
+              <div class="form-status" id="anonymousFormStatus"></div>
+              <button type="submit" class="form-submit-btn">
+                Submit Question Anonymously
+              </button>
+            </form>
           </div>
         </div>
       </section>
@@ -58,18 +74,129 @@
           <p class="survey-intro">
             Answer three quick questions on experience, games, and advice/speak time. Drop suggestions for future events—we read them all!
           </p>
-          <div class="survey-iframe-wrap">
-            <iframe
-              src="https://docs.google.com/forms/d/e/1FAIpQLSclXA4_H2_1qDMh2wdVw4vLB-jv8VP_380XLuMA91ADra7scw/viewform?embedded=true"
-              width="640"
-              height="920"
-              frameborder="0"
-              marginheight="0"
-              marginwidth="0"
-              title="Game Night Feedback Form"
-              >Loading…</iframe
-            >
-          </div>
+          <form id="feedbackForm" class="custom-feedback-form">
+            <div class="form-field">
+              <label for="overallRating">
+                Overall, how would you rate the latest Game Nights you attended?
+                <span class="required">*</span>
+              </label>
+              <div class="linear-scale">
+                <div class="scale-labels">
+                  <span class="scale-label-left">Very Poor</span>
+                  <span class="scale-label-right">Excellent</span>
+                </div>
+                <div class="scale-options">
+                  <label class="scale-option">
+                    <input type="radio" name="entry.123456789" value="1" required />
+                    <span class="scale-number">1</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.123456789" value="2" required />
+                    <span class="scale-number">2</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.123456789" value="3" required />
+                    <span class="scale-number">3</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.123456789" value="4" required />
+                    <span class="scale-number">4</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.123456789" value="5" required />
+                    <span class="scale-number">5</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="gamesRating">
+                How would you rate the games played during the event?
+                <span class="required">*</span>
+              </label>
+              <div class="linear-scale">
+                <div class="scale-labels">
+                  <span class="scale-label-left">Disliked Greatly</span>
+                  <span class="scale-label-right">Loved Greatly</span>
+                </div>
+                <div class="scale-options">
+                  <label class="scale-option">
+                    <input type="radio" name="entry.987654321" value="1" required />
+                    <span class="scale-number">1</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.987654321" value="2" required />
+                    <span class="scale-number">2</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.987654321" value="3" required />
+                    <span class="scale-number">3</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.987654321" value="4" required />
+                    <span class="scale-number">4</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.987654321" value="5" required />
+                    <span class="scale-number">5</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="adviceRating">
+                How would you rate the advice and speaking time provided?
+                <span class="required">*</span>
+              </label>
+              <div class="linear-scale">
+                <div class="scale-labels">
+                  <span class="scale-label-left">Not Helpful</span>
+                  <span class="scale-label-right">Very Helpful</span>
+                </div>
+                <div class="scale-options">
+                  <label class="scale-option">
+                    <input type="radio" name="entry.456789123" value="1" required />
+                    <span class="scale-number">1</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.456789123" value="2" required />
+                    <span class="scale-number">2</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.456789123" value="3" required />
+                    <span class="scale-number">3</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.456789123" value="4" required />
+                    <span class="scale-number">4</span>
+                  </label>
+                  <label class="scale-option">
+                    <input type="radio" name="entry.456789123" value="5" required />
+                    <span class="scale-number">5</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="suggestions">
+                Do you have any suggestions, changes you'd like to see, or future event ideas?
+              </label>
+              <textarea
+                id="suggestions"
+                name="entry.789123456"
+                rows="6"
+                placeholder="Enter Suggestions"
+              ></textarea>
+            </div>
+
+            <div class="form-status" id="feedbackFormStatus"></div>
+            <button type="submit" class="form-submit-btn">
+              Submit Feedback
+            </button>
+          </form>
         </div>
       </section>
 

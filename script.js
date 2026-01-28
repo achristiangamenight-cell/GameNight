@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupFloatingGallery();
   setupForm();
   setupPreForm();
+  setupFeedbackForm();
+  setupAnonymousQuestionForm();
   setupLightbox();
   setupCTAButtons();
   setupNav();
@@ -298,6 +300,302 @@ function setupPreForm() {
         if (preStatus) {
           preStatus.textContent = "We couldn’t submit. Please try again.";
         }
+      });
+  });
+}
+
+function setupFeedbackForm() {
+  const feedbackForm = document.getElementById("feedbackForm");
+  const formStatus = document.getElementById("feedbackFormStatus");
+
+  if (!feedbackForm) return;
+
+  feedbackForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    
+    if (!feedbackForm.checkValidity()) {
+      feedbackForm.reportValidity();
+      return;
+    }
+
+    // Get form data
+    const formData = new FormData(feedbackForm);
+
+    // Extract values and convert ratings to integers
+    const overallRating = parseInt(formData.get("entry.123456789"), 10);
+    const gamesRating = parseInt(formData.get("entry.987654321"), 10);
+    const adviceRating = parseInt(formData.get("entry.456789123"), 10);
+    const suggestions = formData.get("entry.789123456") || "";
+
+    // Validate ratings are between 1-5
+    if (!overallRating || overallRating < 1 || overallRating > 5) {
+      if (formStatus) {
+        formStatus.textContent = "Please select a rating for all required questions.";
+        formStatus.style.color = "var(--accent-red)";
+      }
+      return;
+    }
+
+    if (!gamesRating || gamesRating < 1 || gamesRating > 5) {
+      if (formStatus) {
+        formStatus.textContent = "Please select a rating for all required questions.";
+        formStatus.style.color = "var(--accent-red)";
+      }
+      return;
+    }
+
+    if (!adviceRating || adviceRating < 1 || adviceRating > 5) {
+      if (formStatus) {
+        formStatus.textContent = "Please select a rating for all required questions.";
+        formStatus.style.color = "var(--accent-red)";
+      }
+      return;
+    }
+
+    // Prepare JSON payload with keyword matching
+    // The API uses keyword matching, so keys must match words in your Google Form questions
+    const payload = {
+      // Map ratings - adjust keys to match your form question keywords
+      overallRating: overallRating.toString(),
+      gamesRating: gamesRating.toString(),
+      adviceRating: adviceRating.toString(),
+      // Map suggestions - use "suggestion" (singular) to match your form
+      suggestion: suggestions.trim()
+      // Add other fields if your form has them:
+      // test: "...", // If form has "Test" question
+      // email: "...", // If form has "Email" question
+    };
+
+    // Log the payload being sent
+    console.log("Submitting feedback with payload:", payload);
+    console.log("JSON string:", JSON.stringify(payload));
+
+    // Show loading state
+    if (formStatus) {
+      formStatus.textContent = "Submitting...";
+      formStatus.style.color = "var(--accent-gold)";
+    }
+
+    // Submit to Google Apps Script Web App
+    fetch(
+      "https://script.google.com/macros/s/AKfycbz85O_VsHcgKhDJXEXHvhuK76rmiOIHo4ehI_z70BwLF0nZor8tQxC-SHUxIm9aHZu6zg/exec",
+      {
+        method: "POST",
+        mode: "no-cors", // distinct mode for testing from console
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    )
+      .then(() => {
+        console.log("✓ Successfully submitted feedback!");
+        console.log("Submitted data:", payload);
+        
+        // Reset form
+        feedbackForm.reset();
+        
+        // Show success message
+        if (formStatus) {
+          formStatus.textContent = "✓ Thank you for your feedback!";
+          formStatus.style.color = "var(--accent-gold)";
+          formStatus.style.fontSize = "1.1rem";
+          formStatus.style.fontWeight = "700";
+          formStatus.style.padding = "1.2rem";
+          formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.15)";
+          formStatus.style.borderRadius = "12px";
+          formStatus.style.border = "2px solid var(--accent-gold)";
+          formStatus.style.boxShadow = "0 4px 12px rgba(246, 204, 101, 0.3)";
+        }
+        
+        // Reset status message after 8 seconds
+        setTimeout(() => {
+          if (formStatus) {
+            formStatus.textContent = "";
+            formStatus.style.backgroundColor = "";
+            formStatus.style.border = "";
+            formStatus.style.padding = "";
+            formStatus.style.boxShadow = "";
+          }
+        }, 8000);
+      })
+      .catch((error) => {
+        console.error("✗ Error submitting feedback");
+        console.error("Error details:", error);
+        console.error("Failed data:", payload);
+        
+        if (formStatus) {
+          formStatus.textContent = "We couldn't submit. Please try again.";
+          formStatus.style.color = "var(--accent-red)";
+          formStatus.style.fontSize = "1.1rem";
+          formStatus.style.fontWeight = "700";
+          formStatus.style.padding = "1.2rem";
+          formStatus.style.backgroundColor = "rgba(255, 77, 79, 0.15)";
+          formStatus.style.borderRadius = "12px";
+          formStatus.style.border = "2px solid var(--accent-red)";
+          formStatus.style.boxShadow = "0 4px 12px rgba(255, 77, 79, 0.3)";
+        }
+      });
+  });
+}
+
+/**
+ * Submit data to Google Apps Script Web App using keyword matching
+ * The script uses keyword matching to find the right questions.
+ * For example, {"test": "..."} will find the question containing 'test'
+ * 
+ * @param {Object} data - JSON object with keys matching form question keywords
+ *   Example: { test: "user input", email: "user@example.com" }
+ * @returns {Promise} - Promise that resolves/rejects based on submission result
+ */
+function submitToNewForm(data) {
+  const apiEndpoint = "https://script.google.com/macros/s/AKfycbyaurrLEIMThfBMhFRDssAkRDejY9kqEWySNnak7cJJoz_aj78GzH6qBtXD1CtRh2NCgw/exec";
+
+  // Log the data being sent
+  console.log("Submitting to form with data:", data);
+  console.log("JSON payload:", JSON.stringify(data));
+
+  return fetch(apiEndpoint, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then(() => {
+      // Success - log the successful submission
+      console.log("✓ Successfully submitted to form");
+      console.log("Submitted data:", data);
+      return { success: true, data };
+    })
+    .catch((error) => {
+      // Error - log the error details
+      console.error("✗ Error submitting to form");
+      console.error("Error details:", error);
+      console.error("Failed data:", data);
+      throw error;
+    });
+}
+
+function setupAnonymousQuestionForm() {
+  const anonymousForm = document.getElementById("anonymousQuestionForm");
+  const formStatus = document.getElementById("anonymousFormStatus");
+
+  if (!anonymousForm) return;
+
+  anonymousForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    
+    if (!anonymousForm.checkValidity()) {
+      anonymousForm.reportValidity();
+      return;
+    }
+
+    // Get form data
+    const formData = new FormData(anonymousForm);
+    const question = formData.get("entry.111111111") || "";
+
+    // Validate that question is not empty
+    if (!question.trim()) {
+      alert("Please enter your question before submitting.");
+      return;
+    }
+
+    // Show loading state
+    if (formStatus) {
+      formStatus.textContent = "Submitting your question...";
+      formStatus.style.color = "var(--accent-gold)";
+    }
+
+    // Prepare JSON payload with keyword matching
+    // The API uses keyword matching, so keys must match words in your Google Form questions
+    const payload = {
+      test: question.trim(), // Key "test" matches question containing 'test' in your form
+      // Add other fields here if your form has more questions:
+      // email: emailValue, // If form has "Email" question
+      // name: nameValue,  // If form has "Name" question
+    };
+
+    // Submit using the new function
+    // Note: With no-cors mode, we can't read the response, so we assume success
+    submitToNewForm(payload)
+      .then(() => {
+        // Reset form on success
+        anonymousForm.reset();
+        
+        // Show success message in status area
+        if (formStatus) {
+          formStatus.textContent = "✓ Success! Your question has been submitted anonymously.";
+          formStatus.style.color = "var(--accent-gold)";
+          formStatus.style.fontSize = "1.1rem";
+          formStatus.style.fontWeight = "700";
+          formStatus.style.padding = "1.2rem";
+          formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.15)";
+          formStatus.style.borderRadius = "12px";
+          formStatus.style.border = "2px solid var(--accent-gold)";
+          formStatus.style.display = "block";
+          formStatus.style.visibility = "visible";
+          formStatus.style.opacity = "1";
+          formStatus.style.marginTop = "1.5rem";
+          formStatus.style.marginBottom = "1rem";
+          formStatus.style.boxShadow = "0 4px 12px rgba(246, 204, 101, 0.3)";
+          
+          // Scroll to status message to ensure it's visible
+          formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        
+        // Also show alert as backup confirmation
+        setTimeout(() => {
+          alert("✓ Success! Your question has been submitted anonymously.");
+        }, 300);
+        
+        // Keep message visible for 10 seconds, then fade out
+        setTimeout(() => {
+          if (formStatus) {
+            formStatus.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+            formStatus.style.opacity = "0";
+            formStatus.style.transform = "translateY(-10px)";
+            setTimeout(() => {
+              if (formStatus) {
+                formStatus.textContent = "";
+                formStatus.style.opacity = "1";
+                formStatus.style.transform = "translateY(0)";
+                formStatus.style.backgroundColor = "";
+                formStatus.style.border = "";
+                formStatus.style.padding = "";
+                formStatus.style.boxShadow = "";
+              }
+            }, 500);
+          }
+        }, 10000);
+      })
+      .catch((error) => {
+        console.error("Error submitting anonymous question:", error);
+        
+        // Show error in status
+        if (formStatus) {
+          formStatus.textContent = "✗ Error: We couldn't submit your question. Please try again.";
+          formStatus.style.color = "var(--accent-red)";
+          formStatus.style.fontSize = "1.1rem";
+          formStatus.style.fontWeight = "700";
+          formStatus.style.padding = "1.2rem";
+          formStatus.style.backgroundColor = "rgba(255, 77, 79, 0.15)";
+          formStatus.style.borderRadius = "12px";
+          formStatus.style.border = "2px solid var(--accent-red)";
+          formStatus.style.display = "block";
+          formStatus.style.visibility = "visible";
+          formStatus.style.opacity = "1";
+          formStatus.style.marginTop = "1.5rem";
+          formStatus.style.marginBottom = "1rem";
+          formStatus.style.boxShadow = "0 4px 12px rgba(255, 77, 79, 0.3)";
+          
+          // Scroll to status message
+          formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        
+        // Show error alert
+        alert("Error: We couldn't submit your question. Please try again.");
       });
   });
 }

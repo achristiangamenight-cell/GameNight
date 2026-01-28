@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Google Form Entry IDs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #results {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        .entry-id {
+            background: #e8f5e9;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">
+        <h1>Find Google Form Entry IDs</h1>
+        <h2>Method 1: Using Browser Console</h2>
+        <ol>
+            <li>Open the Google Form: <a href="https://docs.google.com/forms/d/e/1FAIpQLSclXA4_H2_1qDMh2wdVw4vLB-jv8VP_380XLuMA91ADra7scw/viewform" target="_blank">Open Form</a></li>
+            <li>Press F12 (or Right-click → Inspect) to open Developer Tools</li>
+            <li>Go to the Console tab</li>
+            <li>Paste and run this code:</li>
+        </ol>
+        <div class="code">
+// Find all entry IDs in the form
+const inputs = document.querySelectorAll('input[name^="entry."], textarea[name^="entry."], select[name^="entry."]');
+const entryIds = {};
+inputs.forEach(input => {
+    const name = input.name;
+    const label = input.closest('.freebirdFormviewerViewItemsItemItem')?.querySelector('.freebirdFormviewerViewItemsItemItemTitle')?.textContent || 
+                  input.closest('[role="listitem"]')?.querySelector('[role="heading"]')?.textContent ||
+                  'Unknown Field';
+    entryIds[name] = label.trim();
+});
+
+console.log('Entry IDs found:');
+console.table(entryIds);
+
+// Copy to clipboard
+const output = Object.entries(entryIds).map(([id, label]) => `${id}: ${label}`).join('\n');
+navigator.clipboard.writeText(output).then(() => {
+    console.log('Entry IDs copied to clipboard!');
+    alert('Entry IDs copied to clipboard! Check the console for details.');
+});
+        </div>
+
+        <h2>Method 2: Manual Inspection</h2>
+        <ol>
+            <li>Open the Google Form in your browser</li>
+            <li>Right-click on the first question and select "Inspect"</li>
+            <li>Look for input elements with names like <code>name="entry.123456789"</code></li>
+            <li>Note down each entry ID for each question in order</li>
+        </ol>
+
+        <h2>Method 3: View Page Source</h2>
+        <ol>
+            <li>Open the Google Form</li>
+            <li>Press Ctrl+U (or Right-click → View Page Source)</li>
+            <li>Press Ctrl+F and search for "entry."</li>
+            <li>You'll find entries like <code>name="entry.XXXXXXX"</code></li>
+        </ol>
+    </div>
+
+    <div id="results">
+        <h2>Found Entry IDs:</h2>
+        <div id="entryList"></div>
+    </div>
+
+    <script>
+        // This page helps you find entry IDs
+        // The actual extraction needs to be done on the Google Form page itself
+        console.log('Open the Google Form and run the console script to find entry IDs');
+    </script>
+</body>
+</html>
