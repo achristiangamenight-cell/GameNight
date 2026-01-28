@@ -1209,6 +1209,30 @@ section {
     padding: 2rem 1.5rem;
   }
 
+  .section-heading {
+    padding: 0 1rem;
+  }
+
+  .section-heading h2 {
+    font-size: 2rem;
+  }
+
+  .section-heading p {
+    font-size: 1rem;
+  }
+
+  .hero-content {
+    padding: 0 1rem;
+  }
+
+  .checkin-card h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
   .rating-options {
     grid-template-columns: 1fr;
   }
