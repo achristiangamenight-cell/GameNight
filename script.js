@@ -598,6 +598,11 @@ function setupAnonymousQuestionForm() {
         formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
       
+      // Show success alert as required
+      setTimeout(() => {
+        alert("Submitted successfully");
+      }, 300);
+      
       // Keep message visible for 8 seconds, then fade out
       setTimeout(() => {
         if (formStatus) {
