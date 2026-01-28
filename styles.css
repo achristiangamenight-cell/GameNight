@@ -705,6 +705,7 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 3rem 2.5rem;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+  text-align: center;
 }
 
 .form-field {
