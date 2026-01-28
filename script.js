@@ -378,7 +378,7 @@ function setupFeedbackForm() {
 
     // Submit to Google Apps Script Web App
     fetch(
-      "https://script.google.com/macros/s/AKfycbz85O_VsHcgKhDJXEXHvhuK76rmiOIHo4ehI_z70BwLF0nZor8tQxC-SHUxIm9aHZu6zg/exec",
+    "https://script.google.com/macros/s/AKfycbxTnsenjCsnHGNINPV7BnQjbfVPmsQt2CSoMSQhkO6Zi6nYJWtWMoL4zZ2JW8M-bQ/exec",
       {
         method: "POST",
         mode: "no-cors", // distinct mode for testing from console
