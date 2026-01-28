@@ -293,8 +293,8 @@ a:focus {
 
 .custom-anonymous-form textarea:focus {
   outline: none;
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 0 3px rgba(246, 204, 101, 0.25);
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.25);
 }
 
 .custom-anonymous-form textarea::placeholder {
@@ -312,7 +312,7 @@ a:focus {
 
 .form-hint svg {
   flex-shrink: 0;
-  color: var(--accent-gold);
+  color: var(--accent-purple);
   opacity: 0.8;
 }
 
@@ -864,8 +864,8 @@ section {
 .custom-feedback-form textarea:focus,
 .custom-feedback-form select:focus {
   outline: none;
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 0 3px rgba(246, 204, 101, 0.25);
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.25);
 }
 
 .custom-feedback-form textarea::placeholder {
