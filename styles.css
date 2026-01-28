@@ -239,7 +239,7 @@ a:focus {
 }
 
 .hero--anonymous {
-  background: #040202;
+  background: #040202 !important;
 }
 
 .hero--anonymous .checkin-card {
