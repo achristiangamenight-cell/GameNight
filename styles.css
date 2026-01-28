@@ -1233,6 +1233,25 @@ section {
 }
 
 @media (max-width: 480px) {
+  .site-header {
+    padding: 0.75rem;
+  }
+
+  .logo-text {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    padding: 0 0.5rem;
+  }
+
+  .site-nav {
+    gap: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .site-nav a {
+    padding: 0.25rem 0.5rem;
+  }
+
   .floating-gallery {
     gap: 1rem;
   }
@@ -1247,6 +1266,28 @@ section {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .section-heading h2 {
+    font-size: 1.8rem;
+  }
+
+  .section-heading p {
+    font-size: 0.9rem;
+  }
+
+  .custom-feedback-form {
+    padding: 1.5rem 1rem;
+  }
+
+  .form-submit-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .cta-whatsapp__button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
   }
 }
 
