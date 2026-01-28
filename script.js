@@ -585,7 +585,7 @@ function setupAnonymousQuestionForm() {
       
       // Show success message
       if (formStatus) {
-        formStatus.textContent = "✓ Success! Your question has been submitted anonymously.";
+        formStatus.textContent = "✓ Success! Your comment has been submitted anonymously.";
         formStatus.style.color = "var(--accent-gold)";
         formStatus.style.fontSize = "1.1rem";
         formStatus.style.fontWeight = "700";
@@ -634,7 +634,7 @@ function setupAnonymousQuestionForm() {
         submitButton.style.cursor = "pointer";
         const originalText = submitButton.textContent;
         if (originalText === "Submitting...") {
-          submitButton.textContent = "Submit";
+          submitButton.textContent = "Submit Comment";
         }
       }
       
