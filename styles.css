@@ -897,6 +897,18 @@ section {
   box-shadow: 0 25px 45px rgba(246, 204, 101, 0.5);
 }
 
+.form-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 20px 35px rgba(246, 204, 101, 0.2);
+}
+
+.form-submit-btn:disabled:hover {
+  transform: none;
+  box-shadow: 0 20px 35px rgba(246, 204, 101, 0.2);
+}
+
 .custom-feedback-form .primary-btn {
   margin-top: 1.5rem;
   font-size: 1.1rem;

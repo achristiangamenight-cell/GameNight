@@ -1,0 +1,16 @@
+{
+  "name": "game-night-website",
+  "version": "1.0.0",
+  "description": "Christian Singles Game Night Website",
+  "scripts": {
+    "dev": "node watch-and-sync.js",
+    "watch": "node watch-and-sync.js",
+    "start": "npx http-server -p 8000 -o"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chokidar": "^3.5.3"
+  }
+}

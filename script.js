@@ -478,9 +478,49 @@ function submitToNewForm(data) {
     });
 }
 
+/**
+ * Submit form data to Google Apps Script Web App
+ * @param {string} userInput - The user's input text
+ * @returns {Promise} - Promise that resolves/rejects based on submission result
+ */
+function submitForm(userInput) {
+  const apiEndpoint = "https://script.google.com/macros/s/AKfycbwfqsQikHTxvBrwiddPCIsRNfA3Gm5Du0yVMIo4vHcONkznAetekz4qUr1Xnb3tId8NoQ/exec";
+
+  // Prepare JSON payload with myInput key (CRITICAL: must use "myInput")
+  const payload = {
+    myInput: userInput.trim()
+  };
+
+  // Log the submission
+  console.log("Submitting form with payload:", payload);
+  console.log("JSON string:", JSON.stringify(payload));
+
+  return fetch(apiEndpoint, {
+    method: "POST",
+    mode: "no-cors", // Prevents browser cross-origin errors
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then(() => {
+      console.log("✓ Successfully submitted form");
+      console.log("Submitted data:", payload);
+      return { success: true, data: payload };
+    })
+    .catch((error) => {
+      console.error("✗ Error submitting form");
+      console.error("Error details:", error);
+      console.error("Failed data:", payload);
+      throw error;
+    });
+}
+
 function setupAnonymousQuestionForm() {
   const anonymousForm = document.getElementById("anonymousQuestionForm");
   const formStatus = document.getElementById("anonymousFormStatus");
+  const submitButton = anonymousForm?.querySelector('button[type="submit"]');
+  const textarea = document.getElementById("anonymousQuestion");
 
   if (!anonymousForm) return;
 
@@ -494,109 +534,120 @@ function setupAnonymousQuestionForm() {
 
     // Get form data
     const formData = new FormData(anonymousForm);
-    const question = formData.get("entry.111111111") || "";
+    const userInput = formData.get("entry.111111111") || "";
 
-    // Validate that question is not empty
-    if (!question.trim()) {
-      alert("Please enter your question before submitting.");
+    // Validate that input is not empty
+    if (!userInput.trim()) {
+      if (formStatus) {
+        formStatus.textContent = "Please enter your question before submitting.";
+        formStatus.style.color = "var(--accent-red)";
+      }
       return;
     }
 
-    // Show loading state
+    // Disable button and show loading state
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.6";
+      submitButton.style.cursor = "not-allowed";
+      const originalText = submitButton.textContent;
+      submitButton.textContent = "Submitting...";
+    }
+
+    // Show loading message
     if (formStatus) {
       formStatus.textContent = "Submitting your question...";
       formStatus.style.color = "var(--accent-gold)";
+      formStatus.style.fontSize = "1rem";
+      formStatus.style.fontWeight = "600";
+      formStatus.style.padding = "1rem";
+      formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.1)";
+      formStatus.style.borderRadius = "8px";
+      formStatus.style.display = "block";
+      formStatus.style.visibility = "visible";
+      formStatus.style.opacity = "1";
     }
 
-    // Prepare JSON payload with keyword matching
-    // The API uses keyword matching, so keys must match words in your Google Form questions
-    const payload = {
-      test: question.trim(), // Key "test" matches question containing 'test' in your form
-      // Add other fields here if your form has more questions:
-      // email: emailValue, // If form has "Email" question
-      // name: nameValue,  // If form has "Name" question
-    };
-
-    // Submit using the new function
-    // Note: With no-cors mode, we can't read the response, so we assume success
-    submitToNewForm(payload)
-      .then(() => {
-        // Reset form on success
-        anonymousForm.reset();
+    try {
+      // Submit using the submitForm function
+      await submitForm(userInput);
+      
+      // Reset form on success
+      anonymousForm.reset();
+      
+      // Re-enable button
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.style.opacity = "1";
+        submitButton.style.cursor = "pointer";
+      }
+      
+      // Show success message
+      if (formStatus) {
+        formStatus.textContent = "✓ Success! Your question has been submitted anonymously.";
+        formStatus.style.color = "var(--accent-gold)";
+        formStatus.style.fontSize = "1.1rem";
+        formStatus.style.fontWeight = "700";
+        formStatus.style.padding = "1.2rem";
+        formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.15)";
+        formStatus.style.borderRadius = "12px";
+        formStatus.style.border = "2px solid var(--accent-gold)";
+        formStatus.style.boxShadow = "0 4px 12px rgba(246, 204, 101, 0.3)";
         
-        // Show success message in status area
+        // Scroll to status message to ensure it's visible
+        formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      
+      // Keep message visible for 8 seconds, then fade out
+      setTimeout(() => {
         if (formStatus) {
-          formStatus.textContent = "✓ Success! Your question has been submitted anonymously.";
-          formStatus.style.color = "var(--accent-gold)";
-          formStatus.style.fontSize = "1.1rem";
-          formStatus.style.fontWeight = "700";
-          formStatus.style.padding = "1.2rem";
-          formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.15)";
-          formStatus.style.borderRadius = "12px";
-          formStatus.style.border = "2px solid var(--accent-gold)";
-          formStatus.style.display = "block";
-          formStatus.style.visibility = "visible";
-          formStatus.style.opacity = "1";
-          formStatus.style.marginTop = "1.5rem";
-          formStatus.style.marginBottom = "1rem";
-          formStatus.style.boxShadow = "0 4px 12px rgba(246, 204, 101, 0.3)";
-          
-          // Scroll to status message to ensure it's visible
-          formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          formStatus.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          formStatus.style.opacity = "0";
+          formStatus.style.transform = "translateY(-10px)";
+          setTimeout(() => {
+            if (formStatus) {
+              formStatus.textContent = "";
+              formStatus.style.opacity = "1";
+              formStatus.style.transform = "translateY(0)";
+              formStatus.style.backgroundColor = "";
+              formStatus.style.border = "";
+              formStatus.style.padding = "";
+              formStatus.style.boxShadow = "";
+            }
+          }, 500);
         }
-        
-        // Also show alert as backup confirmation
-        setTimeout(() => {
-          alert("✓ Success! Your question has been submitted anonymously.");
-        }, 300);
-        
-        // Keep message visible for 10 seconds, then fade out
-        setTimeout(() => {
-          if (formStatus) {
-            formStatus.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-            formStatus.style.opacity = "0";
-            formStatus.style.transform = "translateY(-10px)";
-            setTimeout(() => {
-              if (formStatus) {
-                formStatus.textContent = "";
-                formStatus.style.opacity = "1";
-                formStatus.style.transform = "translateY(0)";
-                formStatus.style.backgroundColor = "";
-                formStatus.style.border = "";
-                formStatus.style.padding = "";
-                formStatus.style.boxShadow = "";
-              }
-            }, 500);
-          }
-        }, 10000);
-      })
-      .catch((error) => {
-        console.error("Error submitting anonymous question:", error);
-        
-        // Show error in status
-        if (formStatus) {
-          formStatus.textContent = "✗ Error: We couldn't submit your question. Please try again.";
-          formStatus.style.color = "var(--accent-red)";
-          formStatus.style.fontSize = "1.1rem";
-          formStatus.style.fontWeight = "700";
-          formStatus.style.padding = "1.2rem";
-          formStatus.style.backgroundColor = "rgba(255, 77, 79, 0.15)";
-          formStatus.style.borderRadius = "12px";
-          formStatus.style.border = "2px solid var(--accent-red)";
-          formStatus.style.display = "block";
-          formStatus.style.visibility = "visible";
-          formStatus.style.opacity = "1";
-          formStatus.style.marginTop = "1.5rem";
-          formStatus.style.marginBottom = "1rem";
-          formStatus.style.boxShadow = "0 4px 12px rgba(255, 77, 79, 0.3)";
-          
-          // Scroll to status message
-          formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 8000);
+      
+    } catch (error) {
+      console.error("Error submitting anonymous question:", error);
+      
+      // Re-enable button on error
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.style.opacity = "1";
+        submitButton.style.cursor = "pointer";
+        const originalText = submitButton.textContent;
+        if (originalText === "Submitting...") {
+          submitButton.textContent = "Submit";
         }
+      }
+      
+      // Show error message
+      if (formStatus) {
+        formStatus.textContent = "✗ Error: We couldn't submit your question. Please try again.";
+        formStatus.style.color = "var(--accent-red)";
+        formStatus.style.fontSize = "1.1rem";
+        formStatus.style.fontWeight = "700";
+        formStatus.style.padding = "1.2rem";
+        formStatus.style.backgroundColor = "rgba(255, 77, 79, 0.15)";
+        formStatus.style.borderRadius = "12px";
+        formStatus.style.border = "2px solid var(--accent-red)";
+        formStatus.style.boxShadow = "0 4px 12px rgba(255, 77, 79, 0.3)";
         
-        // Show error alert
-        alert("Error: We couldn't submit your question. Please try again.");
-      });
+        // Scroll to status message
+        formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
   });
 }
 
