@@ -884,7 +884,10 @@ section {
 }
 
 .form-submit-btn {
-  width: 100%;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 1.5rem;
   padding: 1rem 2.4rem;
   border-radius: 999px;
