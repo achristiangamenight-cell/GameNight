@@ -681,7 +681,7 @@ section {
 
 .survey-intro {
   color: var(--text-muted);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .survey-iframe-wrap {
@@ -946,7 +946,7 @@ section {
 
 .team-photo {
   max-width: var(--max-width);
-  margin: 0 auto 2rem;
+  margin: 0 auto 1.5rem;
   border-radius: 28px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1166,6 +1166,7 @@ section {
 .past-events {
   background: rgba(8, 6, 7, 0.97);
   text-align: center;
+  padding: 2rem 1.5rem;
 }
 
 @media (max-width: 768px) {
