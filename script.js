@@ -637,10 +637,7 @@ function setupAnonymousQuestionForm() {
         submitButton.disabled = false;
         submitButton.style.opacity = "1";
         submitButton.style.cursor = "pointer";
-        const originalText = submitButton.textContent;
-        if (originalText === "Submitting...") {
-          submitButton.textContent = "Submit Comment";
-        }
+        submitButton.textContent = "Submit Comment";
       }
       
       // Show error message
