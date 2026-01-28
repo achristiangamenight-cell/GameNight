@@ -588,6 +588,7 @@ function setupAnonymousQuestionForm() {
         submitButton.disabled = false;
         submitButton.style.opacity = "1";
         submitButton.style.cursor = "pointer";
+        submitButton.textContent = "Submit Comment";
       }
       
       // Show success message
