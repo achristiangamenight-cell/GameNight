@@ -484,7 +484,7 @@ function submitToNewForm(data) {
  * @returns {Promise} - Promise that resolves/rejects based on submission result
  */
 function submitForm(userInput) {
-  const apiEndpoint = "https://script.google.com/macros/s/AKfycbz9ajEGBxWPsVa9Fd-CEuHR7PVNFrWcAeDNnMvYspOoMjgnx5o8Et1178VaN10NbDNz/exec";
+  const apiEndpoint = "https://script.google.com/macros/s/AKfycbz8JxQF7nuqKoQjMF_6AanhQhzaduEsGbXASpuNTvt2a9TLxLTBBa5n4wUEtUIZ13KQ/exec";
 
   // Prepare JSON payload with myInput key (CRITICAL: must use exact key "myInput")
   const payload = {
