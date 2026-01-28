@@ -65,7 +65,7 @@ a:focus {
 
 .logo-text {
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 2.4rem;
   letter-spacing: 0.12em;
   color: var(--accent-gold);
   text-transform: uppercase;
@@ -80,6 +80,7 @@ a:focus {
   display: flex;
   gap: 1.25rem;
   font-weight: 600;
+  font-size: 1.4rem;
 }
 
 .site-nav a {
