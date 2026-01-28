@@ -491,8 +491,8 @@ function submitForm(userInput) {
     myInput: userInput.trim()
   };
 
-  // Log the submission
-  console.log("Submitting form with payload:", payload);
+  // Log the submission/debug step
+  console.log("Starting submission with:", payload);
   console.log("JSON string:", JSON.stringify(payload));
 
   // Send POST request with no-cors mode to avoid browser cross-origin errors
@@ -505,7 +505,7 @@ function submitForm(userInput) {
     body: JSON.stringify(payload),
   })
     .then(() => {
-      console.log("✓ Successfully submitted form");
+      console.log("Request sent successfully!");
       console.log("Submitted data:", payload);
       return { success: true, data: payload };
     })
