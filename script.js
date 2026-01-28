@@ -522,6 +522,7 @@ function setupAnonymousQuestionForm() {
   const formStatus = document.getElementById("anonymousFormStatus");
   const submitButton = anonymousForm?.querySelector('button[type="submit"]');
   const textarea = document.getElementById("anonymousQuestion");
+  let isLoading = false;
 
   if (!anonymousForm) return;
 
@@ -532,6 +533,9 @@ function setupAnonymousQuestionForm() {
       anonymousForm.reportValidity();
       return;
     }
+
+    if (isLoading) return;
+    isLoading = true;
 
     // Get form data
     const formData = new FormData(anonymousForm);
@@ -552,7 +556,7 @@ function setupAnonymousQuestionForm() {
       submitButton.style.opacity = "0.6";
       submitButton.style.cursor = "not-allowed";
       const originalText = submitButton.textContent;
-      submitButton.textContent = "Submitting...";
+      submitButton.textContent = "Sending...";
     }
 
     // Show loading message
@@ -568,6 +572,9 @@ function setupAnonymousQuestionForm() {
       formStatus.style.visibility = "visible";
       formStatus.style.opacity = "1";
     }
+
+    // Debug log before submission
+    console.log("Starting submission with:", userInput.trim());
 
     try {
       // Submit using the submitForm function
@@ -601,7 +608,7 @@ function setupAnonymousQuestionForm() {
       
       // Success message is shown on-page, no pop-up needed
       
-      // Keep message visible for 8 seconds, then fade out
+        // Keep message visible for 8 seconds, then fade out
       setTimeout(() => {
         if (formStatus) {
           formStatus.style.transition = "opacity 0.5s ease, transform 0.5s ease";
@@ -650,6 +657,8 @@ function setupAnonymousQuestionForm() {
         // Scroll to status message
         formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
+    } finally {
+      isLoading = false;
     }
   });
 }
