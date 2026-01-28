@@ -242,8 +242,14 @@ a:focus {
   background: #040202 !important;
 }
 
+.hero--anonymous::before,
+.hero--anonymous .hero-overlay {
+  display: none !important;
+}
+
 .hero--anonymous .checkin-card {
   border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 6, 7, 0.88);
 }
 
 .anonymous-form-container {
