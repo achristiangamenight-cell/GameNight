@@ -80,7 +80,6 @@ a:focus {
   display: flex;
   gap: 1.25rem;
   font-weight: 600;
-  font-size: 1.4rem;
 }
 
 .site-nav a {
@@ -1186,7 +1185,7 @@ section {
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.75rem;
-    font-size: 1.8rem;
+    font-size: 0.9rem;
   }
 
   .hero {
@@ -1270,7 +1269,7 @@ section {
 
   .site-nav {
     gap: 0.5rem;
-    font-size: 1.7rem;
+    font-size: 0.85rem;
   }
 
   .site-nav a {
