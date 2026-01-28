@@ -307,10 +307,12 @@ function setupPreForm() {
 function setupFeedbackForm() {
   const feedbackForm = document.getElementById("feedbackForm");
   const formStatus = document.getElementById("feedbackFormStatus");
+  const submitButton = feedbackForm?.querySelector('button[type="submit"]');
+  let isLoading = false;
 
   if (!feedbackForm) return;
 
-  feedbackForm.addEventListener("submit", (event) => {
+  feedbackForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     
     if (!feedbackForm.checkValidity()) {
@@ -318,124 +320,131 @@ function setupFeedbackForm() {
       return;
     }
 
+    if (isLoading) return;
+    isLoading = true;
+
     // Get form data
     const formData = new FormData(feedbackForm);
-
-    // Extract values and convert ratings to integers
-    const overallRating = parseInt(formData.get("entry.123456789"), 10);
-    const gamesRating = parseInt(formData.get("entry.987654321"), 10);
-    const adviceRating = parseInt(formData.get("entry.456789123"), 10);
-    const suggestions = formData.get("entry.789123456") || "";
+    const rating1 = formData.get("rating1");
+    const rating2 = formData.get("rating2");
+    const comment = formData.get("comment") || "";
 
     // Validate ratings are between 1-5
-    if (!overallRating || overallRating < 1 || overallRating > 5) {
+    if (!rating1 || !["1","2","3","4","5"].includes(rating1)) {
       if (formStatus) {
-        formStatus.textContent = "Please select a rating for all required questions.";
+        formStatus.textContent = "Please select a rating for Overall Experience.";
         formStatus.style.color = "var(--accent-red)";
       }
+      isLoading = false;
       return;
     }
 
-    if (!gamesRating || gamesRating < 1 || gamesRating > 5) {
+    if (!rating2 || !["1","2","3","4","5"].includes(rating2)) {
       if (formStatus) {
-        formStatus.textContent = "Please select a rating for all required questions.";
+        formStatus.textContent = "Please select a rating for Games Played.";
         formStatus.style.color = "var(--accent-red)";
       }
+      isLoading = false;
       return;
     }
 
-    if (!adviceRating || adviceRating < 1 || adviceRating > 5) {
-      if (formStatus) {
-        formStatus.textContent = "Please select a rating for all required questions.";
-        formStatus.style.color = "var(--accent-red)";
-      }
-      return;
-    }
-
-    // Prepare JSON payload with keyword matching
-    // The API uses keyword matching, so keys must match words in your Google Form questions
+    // Prepare JSON payload with exact keys required by backend
     const payload = {
-      // Map ratings - adjust keys to match your form question keywords
-      overallRating: overallRating.toString(),
-      gamesRating: gamesRating.toString(),
-      adviceRating: adviceRating.toString(),
-      // Map suggestions - use "suggestion" (singular) to match your form
-      suggestion: suggestions.trim()
-      // Add other fields if your form has them:
-      // test: "...", // If form has "Test" question
-      // email: "...", // If form has "Email" question
+      rating1: rating1,
+      rating2: rating2,
+      comment: comment.trim()
     };
 
     // Log the payload being sent
     console.log("Submitting feedback with payload:", payload);
     console.log("JSON string:", JSON.stringify(payload));
 
-    // Show loading state
+    // Show loading state - disable button and show "Sending..." status
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Sending...";
+      submitButton.style.opacity = "0.6";
+      submitButton.style.cursor = "not-allowed";
+    }
+
     if (formStatus) {
-      formStatus.textContent = "Submitting...";
+      formStatus.textContent = "Sending...";
       formStatus.style.color = "var(--accent-gold)";
+      formStatus.style.fontSize = "1rem";
+      formStatus.style.fontWeight = "600";
+      formStatus.style.padding = "1rem";
+      formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.1)";
+      formStatus.style.borderRadius = "8px";
+      formStatus.style.display = "block";
+      formStatus.style.opacity = "1";
     }
 
     // Submit to Google Apps Script Web App
-    fetch(
-    "https://script.google.com/macros/s/AKfycbxTnsenjCsnHGNINPV7BnQjbfVPmsQt2CSoMSQhkO6Zi6nYJWtWMoL4zZ2JW8M-bQ/exec",
-      {
-        method: "POST",
-        mode: "no-cors", // distinct mode for testing from console
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+    try {
+      await fetch(
+        "https://script.google.com/macros/s/AKfycby9nAZlHGu1k7VMQ00FtMhsJKMjwpyL0HU_IXVma57E68751Dw3m_w5rPGqqWVc86x9/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      console.log("✓ Successfully submitted feedback!");
+      console.log("Submitted data:", payload);
+      
+      // Reset form on success
+      feedbackForm.reset();
+      
+      // Re-enable button
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Feedback";
+        submitButton.style.opacity = "1";
+        submitButton.style.cursor = "pointer";
       }
-    )
-      .then(() => {
-        console.log("✓ Successfully submitted feedback!");
-        console.log("Submitted data:", payload);
-        
-        // Reset form
-        feedbackForm.reset();
-        
-        // Show success message
-        if (formStatus) {
-          formStatus.textContent = "✓ Thank you for your feedback!";
-          formStatus.style.color = "var(--accent-gold)";
-          formStatus.style.fontSize = "1.1rem";
-          formStatus.style.fontWeight = "700";
-          formStatus.style.padding = "1.2rem";
-          formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.15)";
-          formStatus.style.borderRadius = "12px";
-          formStatus.style.border = "2px solid var(--accent-gold)";
-          formStatus.style.boxShadow = "0 4px 12px rgba(246, 204, 101, 0.3)";
-        }
-        
-        // Reset status message after 8 seconds
-        setTimeout(() => {
-          if (formStatus) {
-            formStatus.textContent = "";
-            formStatus.style.backgroundColor = "";
-            formStatus.style.border = "";
-            formStatus.style.padding = "";
-            formStatus.style.boxShadow = "";
-          }
-        }, 8000);
-      })
-      .catch((error) => {
-        console.error("✗ Error submitting feedback");
-        console.error("Error details:", error);
-        console.error("Failed data:", payload);
-        
-        if (formStatus) {
-          formStatus.textContent = "We couldn't submit. Please try again.";
-          formStatus.style.color = "var(--accent-red)";
-          formStatus.style.fontSize = "1.1rem";
-          formStatus.style.fontWeight = "700";
-          formStatus.style.padding = "1.2rem";
-          formStatus.style.backgroundColor = "rgba(255, 77, 79, 0.15)";
-          formStatus.style.borderRadius = "12px";
-          formStatus.style.border = "2px solid var(--accent-red)";
-          formStatus.style.boxShadow = "0 4px 12px rgba(255, 77, 79, 0.3)";
-        }
-      });
+      
+      // Show success alert
+      alert("Thank you for your feedback!");
+      
+      // Clear status message
+      if (formStatus) {
+        formStatus.textContent = "";
+        formStatus.style.backgroundColor = "";
+        formStatus.style.border = "";
+        formStatus.style.padding = "";
+        formStatus.style.boxShadow = "";
+      }
+    } catch (error) {
+      console.error("✗ Error submitting feedback");
+      console.error("Error details:", error);
+      console.error("Failed data:", payload);
+      
+      // Re-enable button on error
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Feedback";
+        submitButton.style.opacity = "1";
+        submitButton.style.cursor = "pointer";
+      }
+      
+      if (formStatus) {
+        formStatus.textContent = "We couldn't submit. Please try again.";
+        formStatus.style.color = "var(--accent-red)";
+        formStatus.style.fontSize = "1.1rem";
+        formStatus.style.fontWeight = "700";
+        formStatus.style.padding = "1.2rem";
+        formStatus.style.backgroundColor = "rgba(255, 77, 79, 0.15)";
+        formStatus.style.borderRadius = "12px";
+        formStatus.style.border = "2px solid var(--accent-red)";
+        formStatus.style.boxShadow = "0 4px 12px rgba(255, 77, 79, 0.3)";
+      }
+    } finally {
+      isLoading = false;
+    }
   });
 }
 
