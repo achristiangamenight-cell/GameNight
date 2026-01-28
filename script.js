@@ -540,7 +540,7 @@ function setupAnonymousQuestionForm() {
     // Validate that input is not empty
     if (!userInput.trim()) {
       if (formStatus) {
-        formStatus.textContent = "Please enter your question before submitting.";
+        formStatus.textContent = "Please enter your comment before submitting.";
         formStatus.style.color = "var(--accent-red)";
       }
       return;
@@ -557,7 +557,7 @@ function setupAnonymousQuestionForm() {
 
     // Show loading message
     if (formStatus) {
-      formStatus.textContent = "Submitting your question...";
+      formStatus.textContent = "Submitting your comment...";
       formStatus.style.color = "var(--accent-gold)";
       formStatus.style.fontSize = "1rem";
       formStatus.style.fontWeight = "600";
@@ -640,7 +640,7 @@ function setupAnonymousQuestionForm() {
       
       // Show error message
       if (formStatus) {
-        formStatus.textContent = "✗ Error: We couldn't submit your question. Please try again.";
+        formStatus.textContent = "✗ Error: We couldn't submit your comment. Please try again.";
         formStatus.style.color = "var(--accent-red)";
         formStatus.style.fontSize = "1.1rem";
         formStatus.style.fontWeight = "700";
