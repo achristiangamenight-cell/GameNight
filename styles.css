@@ -720,7 +720,7 @@ section {
 }
 
 .required {
-  color: var(--accent-red);
+  color: var(--accent-purple);
   margin-left: 0.25rem;
 }
 
@@ -832,17 +832,19 @@ section {
 }
 
 .scale-option:hover .scale-number {
-  border-color: var(--accent-gold);
-  background: rgba(246, 204, 101, 0.1);
+  border-color: var(--accent-purple);
+  background: rgba(155, 89, 182, 0.1);
   transform: scale(1.1);
+  color: var(--accent-purple);
+  text-shadow: 0 0 8px rgba(155, 89, 182, 0.6);
 }
 
 .scale-option input[type="radio"]:checked + .scale-number {
-  border-color: var(--accent-gold);
-  background: linear-gradient(135deg, var(--accent-gold), #ffd480);
-  color: var(--bg-dark);
+  border-color: var(--accent-purple);
+  background: linear-gradient(135deg, var(--accent-purple), #bb8fce);
+  color: var(--text-light);
   font-weight: 700;
-  box-shadow: 0 0 0 3px rgba(246, 204, 101, 0.25);
+  box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.25), 0 0 15px rgba(155, 89, 182, 0.4);
   transform: scale(1.15);
 }
 
