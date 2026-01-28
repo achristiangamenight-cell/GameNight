@@ -407,17 +407,26 @@ function setupFeedbackForm() {
         submitButton.style.cursor = "pointer";
       }
       
-      // Show success alert
-      alert("Thank you for your feedback!");
-      
-      // Clear status message
+      // Show prominent success message
       if (formStatus) {
-        formStatus.textContent = "";
-        formStatus.style.backgroundColor = "";
-        formStatus.style.border = "";
-        formStatus.style.padding = "";
-        formStatus.style.boxShadow = "";
+        formStatus.textContent = "✓ Thank you for your feedback!";
+        formStatus.style.color = "var(--accent-gold)";
+        formStatus.style.fontSize = "1.1rem";
+        formStatus.style.fontWeight = "700";
+        formStatus.style.padding = "1.2rem";
+        formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.15)";
+        formStatus.style.borderRadius = "12px";
+        formStatus.style.border = "2px solid var(--accent-gold)";
+        formStatus.style.boxShadow = "0 4px 12px rgba(246, 204, 101, 0.3)";
+        formStatus.style.display = "block";
+        formStatus.style.opacity = "1";
+        
+        // Scroll to status message
+        formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
+      
+      // Also show alert as backup
+      alert("Thank you for your feedback!");
     } catch (error) {
       console.error("✗ Error submitting feedback");
       console.error("Error details:", error);
