@@ -1263,14 +1263,14 @@ section {
   }
 
   .logo-text {
-    font-size: 0.85rem;
+    font-size: 1.7rem;
     letter-spacing: 0.08em;
     padding: 0 0.5rem;
   }
 
   .site-nav {
     gap: 0.5rem;
-    font-size: 0.85rem;
+    font-size: 1.7rem;
   }
 
   .site-nav a {
