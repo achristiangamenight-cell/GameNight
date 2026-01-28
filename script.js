@@ -484,9 +484,9 @@ function submitToNewForm(data) {
  * @returns {Promise} - Promise that resolves/rejects based on submission result
  */
 function submitForm(userInput) {
-  const apiEndpoint = "https://script.google.com/macros/s/AKfycbwfqsQikHTxvBrwiddPCIsRNfA3Gm5Du0yVMIo4vHcONkznAetekz4qUr1Xnb3tId8NoQ/exec";
+  const apiEndpoint = "https://script.google.com/macros/s/AKfycbxfSKvjEFjibTS-RBqOiVIRS0YfgmQjitN0GTrR9t5VNW0mzHruhIE-_hIOReObonE7/exec";
 
-  // Prepare JSON payload with myInput key (CRITICAL: must use "myInput")
+  // Prepare JSON payload with myInput key (CRITICAL: must use exact key "myInput")
   const payload = {
     myInput: userInput.trim()
   };
@@ -495,6 +495,7 @@ function submitForm(userInput) {
   console.log("Submitting form with payload:", payload);
   console.log("JSON string:", JSON.stringify(payload));
 
+  // Send POST request with no-cors mode to avoid browser cross-origin errors
   return fetch(apiEndpoint, {
     method: "POST",
     mode: "no-cors", // Prevents browser cross-origin errors
@@ -600,7 +601,7 @@ function setupAnonymousQuestionForm() {
       
       // Show success alert as required
       setTimeout(() => {
-        alert("Submitted successfully");
+        alert("Submitted successfully!");
       }, 300);
       
       // Keep message visible for 8 seconds, then fade out
