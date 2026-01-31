@@ -962,6 +962,17 @@ section {
   line-height: 1.4;
 }
 
+.cta-whatsapp-panel {
+  margin: 1rem auto 0;
+  padding: 1.5rem;
+  max-width: 640px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  background: rgba(8, 6, 7, 0.92);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+
 
 .team-photo {
   max-width: var(--max-width);
