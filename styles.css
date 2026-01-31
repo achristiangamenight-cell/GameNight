@@ -964,8 +964,26 @@ section {
 }
 
 .about-us-intro strong {
-  color: var(--text-light);
+  color: var(--accent-gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   font-weight: 800;
+  position: relative;
+  padding-left: 12px;
+  display: inline-block;
+}
+
+.about-us-intro strong::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent-gold), rgba(246, 204, 101, 0.35));
+  box-shadow: 0 0 6px rgba(246, 204, 101, 0.25);
 }
 
 .about-us-details {
@@ -1058,6 +1076,7 @@ section {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px 18px;
+  justify-items: center;
 }
 
 .about-us-values li {
@@ -1071,6 +1090,11 @@ section {
   line-height: 1.35;
   letter-spacing: 0.01em;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  width: min(100%, 260px);
+}
+
+.about-us-values li:last-child {
+  grid-column: 1 / -1;
 }
 
 .about-us-values li::before {
