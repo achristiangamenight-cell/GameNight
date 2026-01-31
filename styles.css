@@ -949,9 +949,17 @@ section {
   font-weight: 600;
 }
 
-.team {
+ .team {
   background: rgba(8, 6, 7, 0.97);
   text-align: center;
+}
+
+.about-us-intro {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  padding: 0 1rem;
+  line-height: 1.4;
 }
 
 
