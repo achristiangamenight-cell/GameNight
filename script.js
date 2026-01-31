@@ -97,7 +97,6 @@ const pastMedia = [
   { type: "image", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM.png" },
   { type: "image", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM_1.png" },
   { type: "image", src: "game%20night%20flyer.png" },
-  { type: "image", src: "WhatsApp%20Image%202026-01-31%20at%205.14.11%20PM%20%281%29.jpeg" },
   { type: "image", src: "WhatsApp%20Image%202026-01-31%20at%205.14.11%20PM.jpeg" },
   { type: "image", src: "WhatsApp%20Image%202026-01-31%20at%205.14.12%20PM%20%281%29.jpeg" },
   { type: "image", src: "WhatsApp%20Image%202026-01-31%20at%205.14.12%20PM%20%282%29.jpeg" },
