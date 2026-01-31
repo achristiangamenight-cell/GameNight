@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCTAButtons();
   setupNav();
   setupPastMedia();
+  setupEventFlyers();
   forceHeadcountActive();
   checkTimeUnlocks();
   setupAgendaAccordion();
@@ -62,13 +63,19 @@ const pastMedia = [
   { type: "image", src: "IMG-20251011-WA0014.jpg" },
   { type: "image", src: "IMG-20251011-WA0017.jpg" },
   { type: "image", src: "IMG-20251011-WA0018.jpg" },
+  { type: "image", src: "IMG-20251011-WA0019.jpg" },
+  { type: "image", src: "IMG-20251011-WA0020.jpg" },
   { type: "image", src: "IMG-20251011-WA0021.jpg" },
   { type: "image", src: "IMG-20251011-WA0022.jpg" },
+  { type: "image", src: "IMG-20251011-WA0023.jpg" },
+  { type: "image", src: "IMG-20251011-WA0024.jpg" },
   { type: "image", src: "IMG-20251011-WA0025.jpg" },
   { type: "image", src: "IMG-20251011-WA0026.jpg" },
   { type: "image", src: "IMG-20251011-WA0027.jpg" },
   { type: "image", src: "IMG-20251011-WA0028.jpg" },
   { type: "image", src: "IMG-20251011-WA0029.jpg" },
+  { type: "image", src: "IMG-20251011-WA0031.jpg" },
+  { type: "image", src: "IMG-20251011-WA0032.jpg" },
   { type: "image", src: "IMG-20251011-WA0033.jpg" },
   { type: "image", src: "IMG-20251011-WA0034.jpg" },
   { type: "image", src: "IMG-20251011-WA0035.jpg" },
@@ -89,6 +96,7 @@ const pastMedia = [
   { type: "image", src: "WhatsApp_Image_2025-10-26_at_8.08.09_AM.png" },
   { type: "image", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM.png" },
   { type: "image", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM_1.png" },
+  { type: "flyer", src: "game%20night%20flyer.png" },
   { type: "video", src: "VID-20251011-WA0003.mp4" },
   { type: "video", src: "VID-20251011-WA0004.mp4" },
   { type: "video", src: "VID-20251011-WA0005.mp4" },
@@ -105,6 +113,10 @@ const pastMedia = [
   { type: "video", src: "VID-20251011-WA0016.mp4" },
   { type: "video", src: "VID-20251011-WA0017.mp4" },
   { type: "image", src: "Walk picture.jpg" },
+];
+
+const eventFlyers = [
+  { type: "flyer", src: "game%20night%20flyer.png" },
 ];
 
 let pastMediaItems = [];
@@ -825,7 +837,7 @@ function setupPastMedia() {
     pastMediaItems = getFilteredMedia(filter);
 
     pastMediaItems.forEach((item, index) => {
-      if (item.type === "image") {
+      if (item.type === "image" || item.type === "flyer") {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "media-item";
@@ -864,6 +876,29 @@ function setupPastMedia() {
 
   setActiveTab(activeMediaFilter);
   renderMediaGrid(activeMediaFilter);
+}
+
+function setupEventFlyers() {
+  const grid = document.getElementById("eventFlyersGrid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+  eventFlyers.forEach((item, index) => {
+    if (item.type !== "image" && item.type !== "flyer") return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "media-item";
+    button.setAttribute("aria-label", `View event flyer ${index + 1}`);
+
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = "Event flyer";
+    button.appendChild(img);
+
+    button.addEventListener("click", () => openLightbox(item.src));
+    grid.appendChild(button);
+  });
 }
 
 function getFilteredMedia(filter) {
