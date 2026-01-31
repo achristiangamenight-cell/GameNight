@@ -954,17 +954,9 @@ section {
   text-align: center;
 }
 
-.aboutRow {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  margin: 10px 0 16px;
+.aboutLabel {
+  margin: 10px 0 6px;
   padding: 0 1rem;
-  text-align: left;
-}
-
-.aboutRow .label {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
@@ -976,7 +968,7 @@ section {
   padding-left: 12px;
 }
 
-.aboutRow .label::before {
+.aboutLabel::before {
   content: "";
   position: absolute;
   left: 0;
@@ -989,14 +981,14 @@ section {
   box-shadow: 0 0 6px rgba(246, 204, 101, 0.25);
 }
 
-.aboutRow .text {
-  margin: 0;
+.aboutText {
+  margin: 0 0 16px;
+  padding: 0 1rem;
   line-height: 1.75;
   font-size: 0.97rem;
   letter-spacing: 0.01em;
   color: rgba(255, 255, 255, 0.88);
   text-align: left;
-  width: 100%;
 }
 
 .about-us-details {
@@ -1032,7 +1024,7 @@ section {
   margin: 10px 0 14px;
 }
 
-.about-us-row + .about-us-values {
+.about-us-values {
   margin-top: 8px;
 }
 
