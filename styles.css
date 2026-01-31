@@ -962,6 +962,36 @@ section {
   line-height: 1.4;
 }
 
+.about-us-details {
+  max-width: 720px;
+  margin: 0.75rem auto 0;
+  padding: 0 1rem;
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.about-us-mission {
+  margin: 0 0 1rem;
+  line-height: 1.6;
+}
+
+.about-us-values p {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.about-us-values ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.about-us-values li {
+  list-style: disc;
+}
+
 .cta-whatsapp-panel {
   margin: 1rem auto 0;
   padding: 1.5rem;
