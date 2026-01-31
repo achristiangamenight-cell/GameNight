@@ -961,6 +961,7 @@ section {
   gap: 6px;
   margin: 10px 0 16px;
   padding: 0 1rem;
+  text-align: left;
 }
 
 .aboutRow .label {
@@ -994,6 +995,8 @@ section {
   font-size: 0.97rem;
   letter-spacing: 0.01em;
   color: rgba(255, 255, 255, 0.88);
+  text-align: left;
+  width: 100%;
 }
 
 .about-us-details {
