@@ -956,9 +956,10 @@ section {
 
 .aboutRow {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
-  margin: 10px 0 14px;
+  gap: 6px;
+  margin: 10px 0 16px;
   padding: 0 1rem;
 }
 
@@ -988,7 +989,6 @@ section {
 }
 
 .aboutRow .text {
-  flex: 1;
   margin: 0;
   line-height: 1.75;
   font-size: 0.97rem;
