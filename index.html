@@ -197,6 +197,17 @@
           <h2>Past Events</h2>
           <p>Highlights from recent game nights.</p>
         </div>
+        <div class="media-tabs" role="tablist" aria-label="Past events media filter">
+          <button class="media-tab is-active" type="button" role="tab" aria-selected="true" data-filter="all">
+            All
+          </button>
+          <button class="media-tab" type="button" role="tab" aria-selected="false" data-filter="photos">
+            Photos
+          </button>
+          <button class="media-tab" type="button" role="tab" aria-selected="false" data-filter="videos">
+            Videos
+          </button>
+        </div>
         <div class="media-grid" id="pastMediaGrid"></div>
       </section>
     </main>
@@ -208,9 +219,9 @@
     </footer>
 
     <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
-      <button class="lightbox-close" type="button" aria-label="Close viewer"></button>
       <button class="lightbox-nav lightbox-prev" type="button" aria-label="Previous media"></button>
       <div class="lightbox-media">
+        <button class="lightbox-close" type="button" aria-label="Close viewer"></button>
         <img src="" alt="Event moment" />
         <video src="" controls playsinline></video>
       </div>

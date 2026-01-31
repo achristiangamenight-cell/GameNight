@@ -109,6 +109,7 @@ const pastMedia = [
 
 let pastMediaItems = [];
 let currentMediaIndex = 0;
+let activeMediaFilter = "all";
 
 function setupFloatingGallery() {
   const gallery = document.getElementById("floatingGallery");
@@ -809,35 +810,70 @@ function setupPastMedia() {
   const grid = document.getElementById("pastMediaGrid");
   if (!grid) return;
 
-  pastMediaItems = pastMedia;
+  const tabs = document.querySelectorAll(".media-tab");
 
-  pastMedia.forEach((item, index) => {
-    if (item.type === "image") {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "media-item";
-      button.setAttribute("aria-label", `View past event photo ${index + 1}`);
+  const setActiveTab = (filter) => {
+    tabs.forEach((tab) => {
+      const isActive = tab.dataset.filter === filter;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+  };
 
-      const img = document.createElement("img");
-      img.src = item.src;
-      img.alt = "Past event highlight";
-      button.appendChild(img);
-      button.addEventListener("click", () => openMediaViewer(item, index));
-      grid.appendChild(button);
-    } else if (item.type === "video") {
-      const wrapper = document.createElement("div");
-      wrapper.className = "media-item media-item--video";
+  const renderMediaGrid = (filter) => {
+    grid.innerHTML = "";
+    pastMediaItems = getFilteredMedia(filter);
 
-      const video = document.createElement("video");
-      video.src = item.src;
-      video.controls = true;
-      video.preload = "metadata";
-      video.setAttribute("playsinline", "");
-      wrapper.appendChild(video);
-      wrapper.addEventListener("click", () => openMediaViewer(item, index));
-      grid.appendChild(wrapper);
-    }
+    pastMediaItems.forEach((item, index) => {
+      if (item.type === "image") {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "media-item";
+        button.setAttribute("aria-label", `View past event photo ${index + 1}`);
+
+        const img = document.createElement("img");
+        img.src = item.src;
+        img.alt = "Past event highlight";
+        button.appendChild(img);
+        button.addEventListener("click", () => openMediaViewer(item, index));
+        grid.appendChild(button);
+      } else if (item.type === "video") {
+        const wrapper = document.createElement("div");
+        wrapper.className = "media-item media-item--video";
+
+        const video = document.createElement("video");
+        video.src = item.src;
+        video.controls = true;
+        video.preload = "metadata";
+        video.setAttribute("playsinline", "");
+        wrapper.appendChild(video);
+        wrapper.addEventListener("click", () => openMediaViewer(item, index));
+        grid.appendChild(wrapper);
+      }
+    });
+  };
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const filter = tab.dataset.filter || "all";
+      activeMediaFilter = filter;
+      setActiveTab(filter);
+      renderMediaGrid(filter);
+    });
   });
+
+  setActiveTab(activeMediaFilter);
+  renderMediaGrid(activeMediaFilter);
+}
+
+function getFilteredMedia(filter) {
+  if (filter === "photos") {
+    return pastMedia.filter((item) => item.type === "image");
+  }
+  if (filter === "videos") {
+    return pastMedia.filter((item) => item.type === "video");
+  }
+  return pastMedia;
 }
 
 function setupLightbox() {

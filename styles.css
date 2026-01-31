@@ -1164,6 +1164,41 @@ section {
   padding: 0 1rem;
 }
 
+.media-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.5rem auto 0;
+  flex-wrap: wrap;
+}
+
+.media-tab {
+  border: 1px solid rgba(246, 204, 101, 0.35);
+  background: rgba(13, 11, 12, 0.65);
+  color: var(--accent-cream);
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.media-tab:hover,
+.media-tab:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  outline: none;
+}
+
+.media-tab.is-active {
+  background: linear-gradient(135deg, var(--accent-gold), #ffd480);
+  color: var(--bg-dark);
+  border-color: transparent;
+  box-shadow: 0 16px 30px rgba(246, 204, 101, 0.35);
+}
+
 @media (max-width: 768px) {
   .media-grid {
     padding: 0;
@@ -1247,14 +1282,15 @@ section {
 
 .lightbox-close {
   position: absolute;
-  top: 2rem;
-  right: 2rem;
+  top: -18px;
+  right: -18px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
   border: none;
   background: rgba(246, 204, 101, 0.9);
   cursor: pointer;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
 }
 
 .lightbox-close::before,
@@ -1275,6 +1311,15 @@ section {
 
 .lightbox-close::after {
   transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+@media (max-width: 600px) {
+  .lightbox-close {
+    top: -12px;
+    right: -12px;
+    width: 44px;
+    height: 44px;
+  }
 }
 
 .lightbox-nav {
