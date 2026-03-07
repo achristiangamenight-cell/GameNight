@@ -227,10 +227,12 @@ const pastMedia = [
 ];
 
 const eventFlyers = [
-  // Core flyers for the vertical carousel
+  // Five dedicated event flyers
   { type: "flyer", src: "game%20night%20flyer.png" },
-  { type: "flyer", src: "WhatsApp%20Image%202026-01-31%20at%205.14.11%20PM.jpeg" },
-  { type: "flyer", src: "WhatsApp%20Image%202026-01-31%20at%205.14.12%20PM%20%281%29.jpeg" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-23_at_10.39.43_PM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.10_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-12-19_at_2.37.20_PM.png" },
 ];
 
 let pastMediaItems = [];
