@@ -1124,6 +1124,14 @@ function getFilteredMedia(filter) {
   return pastMedia;
 }
 
+function lockBodyScroll() {
+  document.body.classList.add("lightbox-open");
+}
+
+function unlockBodyScroll() {
+  document.body.classList.remove("lightbox-open");
+}
+
 function setupLightbox() {
   const lightbox = document.getElementById("lightbox");
   if (!lightbox) return;
@@ -1141,6 +1149,7 @@ function setupLightbox() {
     video.pause();
     video.currentTime = 0;
     video.src = "";
+    unlockBodyScroll();
   };
 
   closeBtn.addEventListener("click", close);
@@ -1170,6 +1179,7 @@ function openLightbox(src) {
   img.src = src;
   lightbox.classList.add("open");
   lightbox.setAttribute("aria-hidden", "false");
+  lockBodyScroll();
 }
 
 function openMediaViewer(item, index) {
@@ -1201,6 +1211,7 @@ function openMediaViewer(item, index) {
 
   lightbox.classList.add("open");
   lightbox.setAttribute("aria-hidden", "false");
+  lockBodyScroll();
 }
 
 function showNextMedia() {

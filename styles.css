@@ -25,6 +25,11 @@ body {
   min-height: 100vh;
 }
 
+body.lightbox-open {
+  overflow: hidden;
+  height: 100vh;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -1247,6 +1252,7 @@ section {
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  overflow-y: auto;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease;
