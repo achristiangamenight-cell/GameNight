@@ -1396,6 +1396,159 @@ section {
   padding: 2rem 1.5rem;
 }
 
+.event-flyers {
+  background: rgba(8, 6, 7, 0.97);
+  text-align: center;
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+.flyer-carousel {
+  position: relative;
+  max-width: 720px;
+  margin: 2rem auto 0;
+  padding: 1.75rem 1.75rem 2.25rem;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top, rgba(246, 204, 101, 0.22), transparent 55%),
+    rgba(13, 11, 12, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+
+.flyer-carousel__track {
+  position: relative;
+  min-height: 260px;
+}
+
+.flyer-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(0.96) translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.flyer-slide.is-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+.flyer-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  border-radius: 18px;
+  border: 1px solid rgba(246, 204, 101, 0.6);
+  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.65);
+}
+
+.flyer-carousel__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(246, 204, 101, 0.9);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45);
+}
+
+.flyer-carousel__nav--prev {
+  left: 0.75rem;
+}
+
+.flyer-carousel__nav--next {
+  right: 0.75rem;
+}
+
+.flyer-carousel__nav::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--bg-dark);
+  border-right: 2px solid var(--bg-dark);
+}
+
+.flyer-carousel__nav--prev::before {
+  transform: rotate(-135deg);
+}
+
+.flyer-carousel__nav--next::before {
+  transform: rotate(45deg);
+}
+
+.flyer-carousel__dots {
+  margin-top: 1.75rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.flyer-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease, width 0.25s ease;
+}
+
+.flyer-carousel__dot.is-active {
+  width: 18px;
+  background: var(--accent-gold);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .flyer-carousel {
+    padding: 1.25rem 1.25rem 1.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .flyer-carousel__track {
+    min-height: 220px;
+  }
+
+  .flyer-carousel__nav {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-flyers {
+    padding: 2rem 0.75rem 2.25rem;
+  }
+
+  .flyer-carousel {
+    padding: 1rem 1rem 1.5rem;
+  }
+
+  .flyer-carousel__nav--prev {
+    left: 0.4rem;
+  }
+
+  .flyer-carousel__nav--next {
+    right: 0.4rem;
+  }
+
+  .flyer-carousel__track {
+    min-height: 200px;
+  }
+}
+
 @media (max-width: 768px) {
   .site-header {
     flex-direction: column;

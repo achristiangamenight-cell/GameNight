@@ -228,6 +228,18 @@ const pastMedia = [
 
 const eventFlyers = [
   { type: "flyer", src: "game%20night%20flyer.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-23_at_10.39.43_PM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM_1.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.06_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.06_AM_1.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.09_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.10_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.10_AM_1.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.11_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.13_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.14_AM.png" },
+  { type: "flyer", src: "WhatsApp_Image_2025-12-19_at_2.37.20_PM.png" },
 ];
 
 let pastMediaItems = [];
@@ -990,26 +1002,103 @@ function setupPastMedia() {
 }
 
 function setupEventFlyers() {
-  const grid = document.getElementById("eventFlyersGrid");
-  if (!grid) return;
+  const track = document.getElementById("eventFlyersGrid");
+  const dotsContainer = document.getElementById("eventFlyersDots");
+  const prevButton = document.querySelector(".flyer-carousel__nav--prev");
+  const nextButton = document.querySelector(".flyer-carousel__nav--next");
 
-  grid.innerHTML = "";
+  if (!track) return;
+
+  track.innerHTML = "";
+  if (dotsContainer) dotsContainer.innerHTML = "";
+
+  const slides = [];
+  const dots = [];
+  let activeIndex = 0;
+
+  const showSlide = (index) => {
+    slides.forEach((slide, i) => {
+      const isActive = i === index;
+      slide.classList.toggle("is-active", isActive);
+      slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+    });
+
+    dots.forEach((dot, i) => {
+      const isActive = i === index;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-current", isActive ? "true" : "false");
+    });
+  };
+
   eventFlyers.forEach((item, index) => {
     if (item.type !== "image" && item.type !== "flyer") return;
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "media-item";
-    button.setAttribute("aria-label", `View event flyer ${index + 1}`);
+    const slide = document.createElement("button");
+    slide.type = "button";
+    slide.className = "media-item flyer-slide";
+    slide.setAttribute("aria-label", `View event flyer ${index + 1}`);
+    slide.setAttribute("aria-hidden", "true");
 
     const img = document.createElement("img");
     img.src = item.src;
     img.alt = "Event flyer";
-    button.appendChild(img);
+    slide.appendChild(img);
 
-    button.addEventListener("click", () => openLightbox(item.src));
-    grid.appendChild(button);
+    slide.addEventListener("click", () => openLightbox(item.src));
+    track.appendChild(slide);
+    slides.push(slide);
+
+    if (dotsContainer) {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "flyer-carousel__dot";
+      dot.setAttribute("aria-label", `Go to flyer ${index + 1}`);
+      dot.addEventListener("click", () => {
+        activeIndex = index;
+        showSlide(activeIndex);
+      });
+      dotsContainer.appendChild(dot);
+      dots.push(dot);
+    }
   });
+
+  if (!slides.length) return;
+
+  const goToNext = () => {
+    activeIndex = (activeIndex + 1) % slides.length;
+    showSlide(activeIndex);
+  };
+
+  const goToPrev = () => {
+    activeIndex = (activeIndex - 1 + slides.length) % slides.length;
+    showSlide(activeIndex);
+  };
+
+  if (nextButton) {
+    nextButton.addEventListener("click", () => {
+      goToNext();
+    });
+  }
+
+  if (prevButton) {
+    prevButton.addEventListener("click", () => {
+      goToPrev();
+    });
+  }
+
+  let autoAdvance = setInterval(goToNext, 6000);
+
+  const resetAutoAdvance = () => {
+    clearInterval(autoAdvance);
+    autoAdvance = setInterval(goToNext, 6000);
+  };
+
+  [...dots, nextButton, prevButton].forEach((control) => {
+    if (!control) return;
+    control.addEventListener("click", resetAutoAdvance);
+  });
+
+  showSlide(activeIndex);
 }
 
 function getFilteredMedia(filter) {
