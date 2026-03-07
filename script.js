@@ -227,11 +227,11 @@ const pastMedia = [
 ];
 
 const eventFlyers = [
-  // Five dedicated event flyers
-  { type: "flyer", src: "game%20night%20flyer.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-23_at_10.39.43_PM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.10_AM.png" },
+  // Five dedicated event flyers (as requested)
+  { type: "flyer", src: "IMG-20251011-WA0036.jpg" },
+  { type: "flyer", src: "IMG-20251011-WA0037.jpg" },
+  { type: "flyer", src: "IMG-20251011-WA0038.jpg" },
+  { type: "flyer", src: "IMG-20251011-WA0040.jpg" },
   { type: "flyer", src: "WhatsApp_Image_2025-12-19_at_2.37.20_PM.png" },
 ];
 
