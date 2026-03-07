@@ -238,19 +238,25 @@ const eventFlyers = [
 let pastMediaItems = [];
 let currentMediaIndex = 0;
 let activeMediaFilter = "all";
+/** When the lightbox is open, this is the list used for prev/next (flyers or past media). */
+let lightboxItems = [];
 
 function setupFloatingGallery() {
   const gallery = document.getElementById("floatingGallery");
   if (!gallery) return;
 
-  galleryImages.forEach((src) => {
+  galleryImages.forEach((src, index) => {
     const button = document.createElement("button");
     button.type = "button";
     const img = document.createElement("img");
     img.src = src;
     img.alt = "Game night moment";
     button.appendChild(img);
-    button.addEventListener("click", () => openLightbox(src));
+    const item = { type: "image", src };
+    button.addEventListener("click", () => {
+      lightboxItems = galleryImages.map((s) => ({ type: "image", src: s }));
+      openMediaViewer(item, index);
+    });
     gallery.appendChild(button);
   });
 }
@@ -673,19 +679,337 @@ function submitForm(userInput) {
     });
 }
 
+const ANONYMOUS_COMMENTS_KEY = "gameNightAnonymousComments";
+const DISCUSSION_PAGE_SIZE = 5;
+window.__discussionPage = 1;
+window.__discussionSortMode = "recent";
+window.__lastDiscussionList = [];
+
+function getDiscussionGuestId() {
+  try {
+    var id = localStorage.getItem("discussionGuestId");
+    if (id) return id;
+    id = "guest-" + Date.now() + "-" + Math.random().toString(36).slice(2, 11);
+    localStorage.setItem("discussionGuestId", id);
+    return id;
+  } catch {
+    return "guest-" + Date.now();
+  }
+}
+
+function getAnonymousComments() {
+  try {
+    const raw = localStorage.getItem(ANONYMOUS_COMMENTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveAnonymousComments(comments) {
+  try {
+    localStorage.setItem(ANONYMOUS_COMMENTS_KEY, JSON.stringify(comments));
+  } catch (e) {
+    console.warn("Could not save comments to localStorage", e);
+  }
+}
+
+function formatDiscussionTime(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+  } catch {
+    return "";
+  }
+}
+
+function avgRating(ratings) {
+  if (!ratings || typeof ratings !== "object" || Array.isArray(ratings)) return 0;
+  const vals = Object.values(ratings).filter((n) => typeof n === "number" && n >= 1 && n <= 5);
+  if (vals.length === 0) return 0;
+  return vals.reduce((a, b) => a + b, 0) / vals.length;
+}
+
+function renderDiscussionList(comments, useFirebase) {
+  const listEl = document.getElementById("anonymousCommentsList");
+  const paginationEl = document.getElementById("discussionPagination");
+  if (!listEl) return;
+
+  const searchInput = document.getElementById("discussionSearch");
+  const searchQuery = (searchInput && searchInput.value) ? searchInput.value.trim() : "";
+  let page = Math.max(1, parseInt(window.__discussionPage, 10) || 1);
+
+  const list = (comments || []).map((c) => ({ ...c, ratings: c.ratings && typeof c.ratings === "object" && !Array.isArray(c.ratings) ? { ...c.ratings } : {} }));
+  const byId = new Map(list.map((c) => [c.id, c]));
+  const childrenOf = (id) => list.filter((c) => c.parentId === id);
+  function lastActivityTime(root) {
+    const kids = childrenOf(root.id);
+    const times = [new Date(root.time || 0).getTime()].concat(kids.map((k) => new Date(k.time || 0).getTime()));
+    return Math.max.apply(null, times);
+  }
+  let roots = list.filter((c) => !c.parentId || !byId.get(c.parentId));
+  roots = roots.map((r) => ({ ...r, avgRating: avgRating(r.ratings), lastActivity: lastActivityTime(r) }));
+  const sortMode = window.__discussionSortMode || "recent";
+  if (sortMode === "recent") {
+    roots.sort((a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime());
+  } else if (sortMode === "recentCommented") {
+    roots.sort((a, b) => (b.lastActivity || 0) - (a.lastActivity || 0));
+  } else {
+    roots.sort((a, b) => {
+      const diff = (b.avgRating || 0) - (a.avgRating || 0);
+      if (diff !== 0) return diff;
+      return new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime();
+    });
+  }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    roots = roots.filter((r) => ((r.nickname || "") + " " + (r.text || "")).toLowerCase().includes(q));
+  }
+  const totalFiltered = roots.length;
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / DISCUSSION_PAGE_SIZE));
+  page = Math.min(page, totalPages);
+  window.__discussionPage = page;
+  const start = (page - 1) * DISCUSSION_PAGE_SIZE;
+  const pageRoots = roots.slice(start, start + DISCUSSION_PAGE_SIZE);
+
+  function buildCommentNode(c, depth, isRoot) {
+    const wrap = document.createElement("div");
+    wrap.className = "comment-item" + (depth > 0 ? " comment-item--reply" : "");
+    wrap.dataset.commentId = c.id;
+
+    const header = document.createElement("div");
+    header.className = "comment-header";
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "comment-author";
+    nameSpan.textContent = (c.nickname || "Anonymous").trim() || "Anonymous";
+    const timeSpan = document.createElement("span");
+    timeSpan.className = "comment-time";
+    timeSpan.textContent = formatDiscussionTime(c.time);
+    header.appendChild(nameSpan);
+    header.appendChild(timeSpan);
+
+    const rateInHeader = document.createElement("div");
+    rateInHeader.className = "comment-rate-inline";
+    const curAvg = avgRating(c.ratings);
+    const avgSpan = document.createElement("span");
+    avgSpan.className = "comment-rate-avg";
+    avgSpan.textContent = curAvg > 0 ? "Avg: " + curAvg.toFixed(1) : "";
+    rateInHeader.appendChild(avgSpan);
+    for (let s = 1; s <= 5; s++) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "comment-rate-btn-inline";
+      btn.textContent = s;
+      btn.setAttribute("aria-label", "Rate " + s + " out of 5");
+      (function (score) {
+        btn.addEventListener("click", () => {
+          if (useFirebase) {
+            if (window.CommentsAuth && window.CommentsAuth.rateDiscussion) {
+              window.CommentsAuth.rateDiscussion(c.id, score).catch(function (err) {
+                if (window.showCommentsError) window.showCommentsError(err.message || "Could not submit rating.");
+              });
+            }
+          } else {
+            const all = getAnonymousComments();
+            const comment = all.find((x) => x.id === c.id);
+            if (comment) {
+              comment.ratings = comment.ratings || {};
+              comment.ratings[getDiscussionGuestId()] = score;
+              saveAnonymousComments(all);
+              renderAnonymousComments();
+            }
+          }
+        });
+      })(s);
+      rateInHeader.appendChild(btn);
+    }
+    header.appendChild(rateInHeader);
+
+    const textEl = document.createElement("div");
+    textEl.className = "comment-text";
+    textEl.textContent = c.text;
+
+    const actions = document.createElement("div");
+    actions.className = "comment-actions";
+    const replyBtn = document.createElement("button");
+    replyBtn.type = "button";
+    replyBtn.className = "comment-reply-btn";
+    replyBtn.textContent = "Reply";
+    replyBtn.setAttribute("aria-label", "Reply to this comment");
+    actions.appendChild(replyBtn);
+
+    wrap.appendChild(header);
+    wrap.appendChild(textEl);
+    wrap.appendChild(actions);
+
+    const repliesContainer = document.createElement("div");
+    repliesContainer.className = "comment-replies";
+    const kids = childrenOf(c.id);
+    kids.forEach((child) => repliesContainer.appendChild(buildCommentNode(child, depth + 1, false)));
+    if (kids.length) wrap.appendChild(repliesContainer);
+
+    replyBtn.addEventListener("click", () => {
+      const parentInput = document.getElementById("anonymousParentId");
+      const replyingToEl = document.getElementById("replyingTo");
+      if (parentInput) parentInput.value = c.id;
+      if (replyingToEl) {
+        replyingToEl.innerHTML = "";
+        const span = document.createElement("span");
+        span.textContent = "Replying to " + (nameSpan.textContent);
+        replyingToEl.appendChild(span);
+        const cancel = document.createElement("button");
+        cancel.type = "button";
+        cancel.className = "replying-to-cancel";
+        cancel.textContent = "Cancel";
+        cancel.addEventListener("click", () => {
+          if (parentInput) parentInput.value = "";
+          replyingToEl.innerHTML = "";
+          replyingToEl.classList.remove("is-visible");
+        });
+        replyingToEl.appendChild(cancel);
+        replyingToEl.classList.add("is-visible");
+      }
+      const q = document.getElementById("anonymousQuestion");
+      if (q) q.focus();
+    });
+
+    return wrap;
+  }
+
+  listEl.innerHTML = "";
+  if (pageRoots.length === 0) {
+    listEl.classList.add("is-empty");
+    const empty = document.createElement("p");
+    empty.className = "comments-empty";
+    empty.textContent = searchQuery ? "No discussions match your search." : "No comments yet. Be the first to start the conversation.";
+    listEl.appendChild(empty);
+    if (paginationEl) paginationEl.innerHTML = "";
+    return;
+  }
+  listEl.classList.remove("is-empty");
+  const heading = document.createElement("h2");
+  heading.className = "comments-list-heading";
+  heading.textContent = "Discussion";
+  listEl.appendChild(heading);
+  pageRoots.forEach((c) => listEl.appendChild(buildCommentNode(c, 0, true)));
+
+  if (paginationEl) {
+    paginationEl.innerHTML = "";
+    if (totalPages > 1) {
+      const wrap = document.createElement("div");
+      wrap.className = "discussion-pagination-inner";
+      for (let i = 1; i <= totalPages; i++) {
+        const link = document.createElement("button");
+        link.type = "button";
+        link.className = "discussion-page-btn" + (i === page ? " is-current" : "");
+        link.textContent = i;
+        link.setAttribute("aria-label", "Page " + i);
+        link.setAttribute("aria-current", i === page ? "page" : "false");
+        (function (p) {
+          link.addEventListener("click", () => {
+            window.__discussionPage = p;
+            window.refreshDiscussionList();
+          });
+        })(i);
+        wrap.appendChild(link);
+      }
+      paginationEl.appendChild(wrap);
+    }
+  }
+}
+
+function renderAnonymousComments() {
+  const comments = getAnonymousComments().map((c) => ({ ...c, ratings: c.ratings || {} }));
+  renderDiscussionList(comments, false);
+}
+
 function setupAnonymousQuestionForm() {
   const anonymousForm = document.getElementById("anonymousQuestionForm");
   const formStatus = document.getElementById("anonymousFormStatus");
   const submitButton = anonymousForm?.querySelector('button[type="submit"]');
+  const nicknameInput = document.getElementById("anonymousNickname");
   const textarea = document.getElementById("anonymousQuestion");
+  const parentInput = document.getElementById("anonymousParentId");
+  const replyingToEl = document.getElementById("replyingTo");
   let isLoading = false;
 
   if (!anonymousForm) return;
 
+  if (window.CommentsAuth && window.CommentsAuth.init) window.CommentsAuth.init();
+  if (!(window.CommentsAuth && window.CommentsAuth.isConfigured && window.CommentsAuth.isConfigured())) {
+    renderAnonymousComments();
+  }
+
+  function showStatus(message, isError) {
+    if (!formStatus) return;
+    formStatus.textContent = message;
+    formStatus.style.color = isError ? "var(--accent-red)" : "var(--accent-gold)";
+    formStatus.style.fontSize = "1.1rem";
+    formStatus.style.fontWeight = "700";
+    formStatus.style.padding = "1.2rem";
+    formStatus.style.backgroundColor = isError ? "rgba(255, 77, 79, 0.15)" : "rgba(246, 204, 101, 0.15)";
+    formStatus.style.borderRadius = "12px";
+    formStatus.style.border = isError ? "2px solid var(--accent-red)" : "2px solid var(--accent-gold)";
+    formStatus.style.boxShadow = isError ? "0 4px 12px rgba(255, 77, 79, 0.3)" : "0 4px 12px rgba(246, 204, 101, 0.3)";
+    formStatus.style.display = "block";
+    formStatus.style.visibility = "visible";
+    formStatus.style.opacity = "1";
+    formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  window.showCommentsError = function (message) {
+    showStatus(message || "Something went wrong.", true);
+  };
+
+  window.onCommentsAuthReady = function () {
+    if (window.CommentsAuth && window.CommentsAuth.isConfigured && window.CommentsAuth.loadComments) {
+      window.CommentsAuth.loadComments(function (list) {
+        renderAnonymousCommentsFromList(list);
+      });
+    }
+  };
+
+  var searchInput = document.getElementById("discussionSearch");
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      window.__discussionPage = 1;
+      window.refreshDiscussionList();
+    });
+  }
+  var tabList = document.querySelector(".discussion-tabs");
+  if (tabList) {
+    tabList.addEventListener("click", function (e) {
+      var tab = e.target.closest(".discussion-tab");
+      if (!tab || !tab.dataset.sort) return;
+      window.__discussionSortMode = tab.dataset.sort;
+      window.__discussionPage = 1;
+      tabList.querySelectorAll(".discussion-tab").forEach(function (t) {
+        t.classList.toggle("is-active", t === tab);
+        t.setAttribute("aria-selected", t === tab ? "true" : "false");
+      });
+      window.refreshDiscussionList();
+    });
+  }
+  function setDiscussionTabActive() {
+    var sortMode = window.__discussionSortMode || "recent";
+    var tabList = document.querySelector(".discussion-tabs");
+    if (tabList) {
+      tabList.querySelectorAll(".discussion-tab").forEach(function (t) {
+        var isActive = (t.dataset.sort || "") === sortMode;
+        t.classList.toggle("is-active", isActive);
+        t.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+    }
+  }
+  window.setDiscussionTabActive = setDiscussionTabActive;
+  setDiscussionTabActive();
+
   anonymousForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    
+
     if (!anonymousForm.checkValidity()) {
+      formStatus && (formStatus.textContent = "Please enter your comment.");
+      formStatus && (formStatus.style.color = "var(--accent-red)");
       anonymousForm.reportValidity();
       return;
     }
@@ -693,29 +1017,34 @@ function setupAnonymousQuestionForm() {
     if (isLoading) return;
     isLoading = true;
 
-    // Get form data
-    const formData = new FormData(anonymousForm);
-    const userInput = formData.get("entry.111111111") || "";
+    const nickname = (nicknameInput?.value || "").trim();
+    const userInput = (textarea?.value || "").trim();
+    const parentId = (parentInput?.value || "").trim();
 
-    // Validate that input is not empty
-    if (!userInput.trim()) {
+    if (!userInput) {
       if (formStatus) {
         formStatus.textContent = "Please enter your comment before submitting.";
         formStatus.style.color = "var(--accent-red)";
       }
+      isLoading = false;
       return;
     }
 
-    // Disable button and show loading state
+    const useFirebase = window.CommentsAuth && window.CommentsAuth.isConfigured && window.CommentsAuth.isConfigured();
+    if (useFirebase) {
+      if (nickname.length > 0 && !window.CommentsAuth.getCurrentUser()) {
+        showStatus("Log in to claim this nickname and track your comment.", false);
+        isLoading = false;
+        return;
+      }
+    }
+
     if (submitButton) {
       submitButton.disabled = true;
       submitButton.style.opacity = "0.6";
       submitButton.style.cursor = "not-allowed";
-      const originalText = submitButton.textContent;
       submitButton.textContent = "Sending...";
     }
-
-    // Show loading message
     if (formStatus) {
       formStatus.textContent = "Submitting your comment...";
       formStatus.style.color = "var(--accent-gold)";
@@ -729,43 +1058,45 @@ function setupAnonymousQuestionForm() {
       formStatus.style.opacity = "1";
     }
 
-    // Debug log before submission
-    console.log("Starting submission with:", userInput.trim());
-
     try {
-      // Submit using the submitForm function
-      await submitForm(userInput);
-      
-      // Reset form on success
+      if (useFirebase) {
+        await window.CommentsAuth.submitComment({ nickname, text: userInput, parentId: parentId || null });
+      } else {
+        const displayName = nickname || "Anonymous";
+        const comments = getAnonymousComments();
+        const parentComment = parentId ? comments.find((c) => c.id === parentId) : null;
+        const payloadForApi = parentComment
+          ? `[${displayName}] (Reply to ${(parentComment.nickname || "Anonymous").trim()}) ${userInput}`
+          : `[${displayName}] ${userInput}`;
+        await submitForm(payloadForApi);
+        const newComment = {
+          id: "c-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9),
+          parentId: parentId || null,
+          nickname: displayName,
+          text: userInput,
+          time: new Date().toISOString(),
+        };
+        comments.push(newComment);
+        saveAnonymousComments(comments);
+        renderAnonymousComments();
+      }
+
       anonymousForm.reset();
-      
-      // Re-enable button
+      if (parentInput) parentInput.value = "";
+      if (replyingToEl) {
+        replyingToEl.innerHTML = "";
+        replyingToEl.classList.remove("is-visible");
+      }
+
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.style.opacity = "1";
         submitButton.style.cursor = "pointer";
-        submitButton.textContent = "Submit Comment";
+        submitButton.textContent = "Submit";
       }
-      
-      // Show success message
-      if (formStatus) {
-        formStatus.textContent = "✓ Success! Your comment has been submitted anonymously.";
-        formStatus.style.color = "var(--accent-gold)";
-        formStatus.style.fontSize = "1.1rem";
-        formStatus.style.fontWeight = "700";
-        formStatus.style.padding = "1.2rem";
-        formStatus.style.backgroundColor = "rgba(246, 204, 101, 0.15)";
-        formStatus.style.borderRadius = "12px";
-        formStatus.style.border = "2px solid var(--accent-gold)";
-        formStatus.style.boxShadow = "0 4px 12px rgba(246, 204, 101, 0.3)";
-        
-        // Scroll to status message to ensure it's visible
-        formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }
-      
-      // Success message is shown on-page, no pop-up needed
-      
-        // Keep message visible for 8 seconds, then fade out
+
+      showStatus(nickname ? "✓ Your comment was posted. You can find it below by your nickname." : "✓ Your comment was posted as Anonymous.", false);
+
       setTimeout(() => {
         if (formStatus) {
           formStatus.style.transition = "opacity 0.5s ease, transform 0.5s ease";
@@ -783,39 +1114,35 @@ function setupAnonymousQuestionForm() {
             }
           }, 500);
         }
-      }, 8000);
-      
+      }, 6000);
     } catch (error) {
-      console.error("Error submitting anonymous question:", error);
-      
-      // Re-enable button on error
+      console.error("Error submitting comment:", error);
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.style.opacity = "1";
         submitButton.style.cursor = "pointer";
-        submitButton.textContent = "Submit Comment";
+        submitButton.textContent = "Submit";
       }
-      
-      // Show error message
-      if (formStatus) {
-        formStatus.textContent = "✗ Error: We couldn't submit your comment. Please try again.";
-        formStatus.style.color = "var(--accent-red)";
-        formStatus.style.fontSize = "1.1rem";
-        formStatus.style.fontWeight = "700";
-        formStatus.style.padding = "1.2rem";
-        formStatus.style.backgroundColor = "rgba(255, 77, 79, 0.15)";
-        formStatus.style.borderRadius = "12px";
-        formStatus.style.border = "2px solid var(--accent-red)";
-        formStatus.style.boxShadow = "0 4px 12px rgba(255, 77, 79, 0.3)";
-        
-        // Scroll to status message
-        formStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }
+      const msg = error && error.message ? error.message : "We couldn't submit your comment. Please try again.";
+      showStatus(msg, true);
     } finally {
       isLoading = false;
     }
   });
 }
+
+function renderAnonymousCommentsFromList(list) {
+  window.__lastDiscussionList = list || [];
+  renderDiscussionList(window.__lastDiscussionList, true);
+}
+
+window.refreshDiscussionList = function () {
+  if (window.CommentsAuth && window.CommentsAuth.isConfigured && window.CommentsAuth.isConfigured()) {
+    renderAnonymousCommentsFromList(window.__lastDiscussionList || []);
+  } else {
+    renderAnonymousComments();
+  }
+};
 
 function unlockSection(section) {
   if (!section) return;
@@ -963,7 +1290,10 @@ function setupPastMedia() {
         img.src = item.src;
         img.alt = "Past event highlight";
         button.appendChild(img);
-        button.addEventListener("click", () => openMediaViewer(item, index));
+        button.addEventListener("click", () => {
+          lightboxItems = pastMediaItems;
+          openMediaViewer(item, index);
+        });
         grid.appendChild(button);
       } else if (item.type === "video") {
         const wrapper = document.createElement("div");
@@ -975,7 +1305,10 @@ function setupPastMedia() {
         video.preload = "metadata";
         video.setAttribute("playsinline", "");
         wrapper.appendChild(video);
-        wrapper.addEventListener("click", () => openMediaViewer(item, index));
+        wrapper.addEventListener("click", () => {
+          lightboxItems = pastMediaItems;
+          openMediaViewer(item, index);
+        });
         grid.appendChild(wrapper);
       }
     });
@@ -1057,7 +1390,10 @@ function setupEventFlyers() {
     img.alt = "Event flyer";
     slide.appendChild(img);
 
-    slide.addEventListener("click", () => openLightbox(item.src));
+    slide.addEventListener("click", () => {
+      lightboxItems = eventFlyers.filter((i) => i.type === "image" || i.type === "flyer");
+      openMediaViewer(item, index);
+    });
     track.appendChild(slide);
     slides.push(slide);
 
@@ -1173,22 +1509,13 @@ function setupLightbox() {
 }
 
 function openLightbox(src) {
-  const lightbox = document.getElementById("lightbox");
-  if (!lightbox) return;
-  const img = lightbox.querySelector("img");
-  img.src = src;
-  lightbox.classList.add("open");
-  lightbox.setAttribute("aria-hidden", "false");
-  lockBodyScroll();
+  lightboxItems = [{ type: "image", src }];
+  openMediaViewer(lightboxItems[0], 0);
 }
 
 function openMediaViewer(item, index) {
   const lightbox = document.getElementById("lightbox");
   if (!lightbox) return;
-
-  if (!pastMediaItems.length) {
-    pastMediaItems = pastMedia;
-  }
 
   currentMediaIndex = index;
 
@@ -1200,7 +1527,7 @@ function openMediaViewer(item, index) {
   video.pause();
   video.currentTime = 0;
 
-  if (item.type === "image") {
+  if (item.type === "image" || item.type === "flyer") {
     img.src = item.src;
     img.style.display = "block";
   } else {
@@ -1215,15 +1542,15 @@ function openMediaViewer(item, index) {
 }
 
 function showNextMedia() {
-  if (!pastMediaItems.length) return;
-  currentMediaIndex = (currentMediaIndex + 1) % pastMediaItems.length;
-  openMediaViewer(pastMediaItems[currentMediaIndex], currentMediaIndex);
+  if (!lightboxItems.length) return;
+  currentMediaIndex = (currentMediaIndex + 1) % lightboxItems.length;
+  openMediaViewer(lightboxItems[currentMediaIndex], currentMediaIndex);
 }
 
 function showPrevMedia() {
-  if (!pastMediaItems.length) return;
-  currentMediaIndex = (currentMediaIndex - 1 + pastMediaItems.length) % pastMediaItems.length;
-  openMediaViewer(pastMediaItems[currentMediaIndex], currentMediaIndex);
+  if (!lightboxItems.length) return;
+  currentMediaIndex = (currentMediaIndex - 1 + lightboxItems.length) % lightboxItems.length;
+  openMediaViewer(lightboxItems[currentMediaIndex], currentMediaIndex);
 }
 
 // Auto-unlock at 6pm Oct 25

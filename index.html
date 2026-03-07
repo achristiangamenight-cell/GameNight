@@ -19,11 +19,11 @@
         <div class="tagline">A Christian Singles Group</div>
       </div>
       <nav class="site-nav">
-        <a href="#anonymous-questions">Anonymous Comments / Questions</a>
+        <a href="#anonymous-questions">Anonymous Comments / Questions / Topic</a>
         <a href="#survey">Rate Game Night</a>
         <a href="#team">Meet the Team</a>
-        <a href="#past-events">Past Events</a>
         <a href="#event-flyers">Event Flyers</a>
+        <a href="#past-events">Event Pictures / Videos</a>
       </nav>
     </header>
 
@@ -31,23 +31,58 @@
       <section id="anonymous-questions" class="hero hero--anonymous">
         <div class="hero-content">
           <div class="checkin-card">
-            <h1>Anonymous Comments / Questions</h1>
+            <h1>Anonymous Comments / Questions / Topic</h1>
+            <p class="forum-intro">Share a comment, question, or topic. Add a nickname and sign in to claim it and track your comments.</p>
             <form id="anonymousQuestionForm" class="custom-anonymous-form">
+              <input type="hidden" id="anonymousParentId" name="parentId" value="" />
               <div class="form-field">
+                <label for="anonymousNickname">Name / Nickname</label>
+                <input
+                  type="text"
+                  id="anonymousNickname"
+                  name="nickname"
+                  placeholder="e.g. GameNightFan"
+                  maxlength="60"
+                />
+              </div>
+              <div id="authClaimPrompt" class="auth-claim-prompt" aria-live="polite" hidden>
+                <p class="auth-claim-text">Log in to claim this nickname and track your comment.</p>
+                <div class="auth-buttons">
+                  <button type="button" id="authGoogleBtn" class="auth-btn auth-btn--google">Sign in with Google</button>
+                  <button type="button" id="authAppleBtn" class="auth-btn auth-btn--apple">Sign in with Apple</button>
+                </div>
+              </div>
+              <div id="authStatus" class="auth-status" aria-live="polite" hidden>
+                <span id="authStatusText"></span>
+                <button type="button" id="authSignOutBtn" class="auth-sign-out">Sign out</button>
+              </div>
+              <div class="form-field">
+                <label for="anonymousQuestion">Comment / Question / Topic <span class="required">*</span></label>
                 <textarea
                   id="anonymousQuestion"
                   name="entry.111111111"
-                  rows="6"
-                  placeholder="Type your Comments / Questions here..."
+                  rows="5"
+                  placeholder="Type your comment, question, or topic here..."
                   required
                 ></textarea>
               </div>
-
+              <div id="replyingTo" class="replying-to" aria-live="polite"></div>
               <div class="form-status" id="anonymousFormStatus"></div>
               <button type="submit" class="form-submit-btn" id="anonymousSubmitBtn">
-                Submit Comment
+                Submit
               </button>
             </form>
+            <div class="discussion-toolbar">
+              <div class="discussion-tabs" role="tablist" aria-label="Sort discussions">
+                <button type="button" class="discussion-tab is-active" role="tab" aria-selected="true" data-sort="recent">Recent</button>
+                <button type="button" class="discussion-tab" role="tab" aria-selected="false" data-sort="recentCommented">Recent commented on</button>
+                <button type="button" class="discussion-tab" role="tab" aria-selected="false" data-sort="ranking">Highest ranking</button>
+              </div>
+              <label for="discussionSearch" class="discussion-search-label">Search discussions</label>
+              <input type="search" id="discussionSearch" class="discussion-search-input" placeholder="Search by nickname or text..." aria-label="Search discussions" />
+            </div>
+            <div id="anonymousCommentsList" class="comments-list" aria-label="Comment thread"></div>
+            <nav id="discussionPagination" class="discussion-pagination" aria-label="Discussion pages"></nav>
           </div>
         </div>
       </section>
@@ -228,10 +263,10 @@
 
       <section id="past-events" class="past-events">
         <div class="section-heading">
-          <h2>Past Events</h2>
+          <h2>Event Pictures / Videos</h2>
           <p>Highlights from recent game nights.</p>
         </div>
-        <div class="media-tabs" role="tablist" aria-label="Past events media filter">
+        <div class="media-tabs" role="tablist" aria-label="Event Pictures / Videos media filter">
           <button class="media-tab is-active" type="button" role="tab" aria-selected="true" data-filter="all">
             All
           </button>
@@ -262,7 +297,12 @@
       <button class="lightbox-nav lightbox-next" type="button" aria-label="Next media"></button>
     </div>
 
-    <script src="script.js?v=2.2" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js" defer></script>
+    <script src="firebase-comments.js" defer></script>
+    <script src="script.js?v=2.3" defer></script>
   </body>
 </html>
 

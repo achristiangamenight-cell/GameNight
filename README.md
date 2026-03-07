@@ -4,6 +4,31 @@ Christian Singles Game Night Check-In Website
 
 **Live Site:** https://achristiangamenight-cell.github.io/GameNight/
 
+## Push to GitHub
+
+If this is a new repo or you're pushing "New Game Night" for the first time:
+
+```bash
+cd "Oct25thGameNight"
+git init
+git add .
+git commit -m "Game Night site: comments, discussion tabs, Firebase-ready"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git push -u origin main
+```
+
+If the repo already exists and you're just updating:
+
+```bash
+cd "Oct25thGameNight"
+git add .
+git commit -m "Ready for GitHub: discussion tabs, search, ranking, optional nickname"
+git push
+```
+
+**Note:** Do not commit real Firebase API keys. Keep `FIREBASE_ENABLED = false` and placeholder values in `firebase-config.js` in the repo; use environment or deploy secrets for production keys if needed.
+
 ## Setup
 
 1. Install dependencies:
@@ -73,6 +98,8 @@ The repository is configured with GitHub Actions to automatically deploy to GitH
 - Custom styled forms
 - Google Apps Script integration
 - Responsive design
-- Anonymous question submission
+- Anonymous comments / questions (optional nickname; Google & Apple sign-in to claim a nickname)
+- Discussion list: search, sort by Recent / Recent commented on / Highest ranking, rate 1–5, pagination (5 per page)
 - Feedback form with ratings
+- Firebase (optional): see `COMMENT_FIREBASE_SETUP.md` for Auth + Firestore
 - Automatic GitHub Pages deployment
