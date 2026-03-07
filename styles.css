@@ -1419,21 +1419,29 @@ section {
 .flyer-carousel__track {
   position: relative;
   min-height: 260px;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.flyer-carousel__track::-webkit-scrollbar {
+  display: none;
 }
 
 .flyer-slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: scale(0.96) translateY(10px);
-  pointer-events: none;
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  position: relative;
+  flex: 0 0 calc(33.333% - 0.75rem);
+  scroll-snap-align: start;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .flyer-slide.is-active {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  pointer-events: auto;
+  transform: translateY(-4px);
+  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.65);
 }
 
 .flyer-slide img {
@@ -1517,13 +1525,13 @@ section {
     margin-top: 1.5rem;
   }
 
-  .flyer-carousel__track {
-    min-height: 220px;
-  }
-
   .flyer-carousel__nav {
     width: 36px;
     height: 36px;
+  }
+
+  .flyer-slide {
+    flex: 0 0 80%;
   }
 }
 

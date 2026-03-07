@@ -227,19 +227,10 @@ const pastMedia = [
 ];
 
 const eventFlyers = [
+  // Core flyers for the vertical carousel
   { type: "flyer", src: "game%20night%20flyer.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-23_at_10.39.43_PM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.04_AM_1.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.06_AM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.06_AM_1.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.09_AM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.10_AM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.10_AM_1.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.11_AM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.13_AM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-10-26_at_8.08.14_AM.png" },
-  { type: "flyer", src: "WhatsApp_Image_2025-12-19_at_2.37.20_PM.png" },
+  { type: "flyer", src: "WhatsApp%20Image%202026-01-31%20at%205.14.11%20PM.jpeg" },
+  { type: "flyer", src: "WhatsApp%20Image%202026-01-31%20at%205.14.12%20PM%20%281%29.jpeg" },
 ];
 
 let pastMediaItems = [];
@@ -1015,19 +1006,40 @@ function setupEventFlyers() {
   const slides = [];
   const dots = [];
   let activeIndex = 0;
+  let autoAdvance;
 
-  const showSlide = (index) => {
-    slides.forEach((slide, i) => {
-      const isActive = i === index;
-      slide.classList.toggle("is-active", isActive);
-      slide.setAttribute("aria-hidden", isActive ? "false" : "true");
-    });
-
+  const updateDots = () => {
     dots.forEach((dot, i) => {
-      const isActive = i === index;
+      const isActive = i === activeIndex;
       dot.classList.toggle("is-active", isActive);
       dot.setAttribute("aria-current", isActive ? "true" : "false");
     });
+  };
+
+  const showSlide = (index) => {
+    if (!slides.length) return;
+    const maxIndex = slides.length - 1;
+    if (index < 0) {
+      activeIndex = maxIndex;
+    } else if (index > maxIndex) {
+      activeIndex = 0;
+    } else {
+      activeIndex = index;
+    }
+
+    const target = slides[activeIndex];
+    const targetOffset = target.offsetLeft;
+
+    track.scrollTo({
+      left: targetOffset,
+      behavior: "smooth",
+    });
+
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("is-active", i === activeIndex);
+    });
+
+    updateDots();
   };
 
   eventFlyers.forEach((item, index) => {
@@ -1037,7 +1049,6 @@ function setupEventFlyers() {
     slide.type = "button";
     slide.className = "media-item flyer-slide";
     slide.setAttribute("aria-label", `View event flyer ${index + 1}`);
-    slide.setAttribute("aria-hidden", "true");
 
     const img = document.createElement("img");
     img.src = item.src;
@@ -1054,8 +1065,8 @@ function setupEventFlyers() {
       dot.className = "flyer-carousel__dot";
       dot.setAttribute("aria-label", `Go to flyer ${index + 1}`);
       dot.addEventListener("click", () => {
-        activeIndex = index;
-        showSlide(activeIndex);
+        showSlide(index);
+        resetAutoAdvance();
       });
       dotsContainer.appendChild(dot);
       dots.push(dot);
@@ -1065,40 +1076,40 @@ function setupEventFlyers() {
   if (!slides.length) return;
 
   const goToNext = () => {
-    activeIndex = (activeIndex + 1) % slides.length;
-    showSlide(activeIndex);
+    showSlide(activeIndex + 1);
   };
 
   const goToPrev = () => {
-    activeIndex = (activeIndex - 1 + slides.length) % slides.length;
-    showSlide(activeIndex);
+    showSlide(activeIndex - 1);
+  };
+
+  const resetAutoAdvance = () => {
+    if (autoAdvance) {
+      clearInterval(autoAdvance);
+    }
+    autoAdvance = setInterval(goToNext, 8000);
   };
 
   if (nextButton) {
     nextButton.addEventListener("click", () => {
       goToNext();
+      resetAutoAdvance();
     });
   }
 
   if (prevButton) {
     prevButton.addEventListener("click", () => {
       goToPrev();
+      resetAutoAdvance();
     });
   }
 
-  let autoAdvance = setInterval(goToNext, 6000);
+  resetAutoAdvance();
 
-  const resetAutoAdvance = () => {
-    clearInterval(autoAdvance);
-    autoAdvance = setInterval(goToNext, 6000);
-  };
-
-  [...dots, nextButton, prevButton].forEach((control) => {
-    if (!control) return;
-    control.addEventListener("click", resetAutoAdvance);
+  // Ensure layout is ready before the initial scroll
+  requestAnimationFrame(() => {
+    showSlide(0);
   });
-
-  showSlide(activeIndex);
 }
 
 function getFilteredMedia(filter) {
