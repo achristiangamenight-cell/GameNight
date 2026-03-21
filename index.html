@@ -18,7 +18,18 @@
         <div class="logo-text">GAME NIGHT</div>
         <div class="tagline">A Christian Singles Group</div>
       </div>
-      <nav class="site-nav">
+      <button
+        type="button"
+        class="nav-toggle"
+        aria-expanded="false"
+        aria-controls="siteNav"
+        aria-label="Open navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="site-nav" id="siteNav">
         <a href="#home-hero">Home</a>
         <a href="#event-flyers">Event Flyers</a>
         <a href="#team">Meet Our Team</a>
@@ -31,18 +42,65 @@
 
     <main>
       <section id="home-hero" class="hero hero--landing">
-              <div class="hero-overlay"></div>
-              <div class="hero-content">
-                <div class="checkin-card landing-card">
-                  <h1>Christian Singles Game Night</h1>
-                  <p class="hero-subtitle">A fun, faith-centered community where single Christians connect, laugh, and build real friendships.</p>
-                  <div class="landing-cta-row">
-                    <a class="form-submit-btn landing-cta" href="#event-flyers">View Event Flyers</a>
-                    <a class="form-submit-btn landing-cta landing-cta--secondary" href="#anonymous-questions">Join The Discussion</a>
-                  </div>
-                </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content landing-hero-content">
+          <div class="checkin-card landing-card">
+            <p class="landing-eyebrow">Christian Singles Community</p>
+            <h1>Game Night That Feels Warm, Social, and Full of Energy.</h1>
+            <p class="hero-subtitle">A fun, faith-centered space where single Christians connect over cards, conversation, laughter, and memorable nights together.</p>
+            <div class="landing-highlights">
+              <span class="landing-pill">Games & cards</span>
+              <span class="landing-pill">Real conversations</span>
+              <span class="landing-pill">Faith-centered community</span>
+            </div>
+            <div class="landing-cta-row">
+              <a class="form-submit-btn landing-cta" href="#event-flyers">View Event Flyers</a>
+              <a class="form-submit-btn landing-cta landing-cta--secondary" href="#anonymous-questions">Join The Discussion</a>
+            </div>
+          </div>
+          <div class="landing-showcase" aria-hidden="true">
+            <div class="landing-glow landing-glow--gold"></div>
+            <div class="landing-glow landing-glow--purple"></div>
+            <div class="landing-stage">
+              <div class="hero-board-game">
+                <span class="hero-board-game__cell hero-board-game__cell--gold"></span>
+                <span class="hero-board-game__cell hero-board-game__cell--purple"></span>
+                <span class="hero-board-game__cell hero-board-game__cell--red"></span>
+                <span class="hero-board-game__cell hero-board-game__cell--dark"></span>
+                <span class="hero-board-game__token hero-board-game__token--one"></span>
+                <span class="hero-board-game__token hero-board-game__token--two"></span>
               </div>
-            </section>
+              <div class="hero-card hero-card--back"></div>
+              <div class="hero-card hero-card--front">
+                <span class="hero-card__corner hero-card__corner--top">A</span>
+                <span class="hero-card__suit">♥</span>
+                <span class="hero-card__corner hero-card__corner--bottom">A</span>
+              </div>
+              <div class="hero-dice">
+                <span class="hero-dice__dot hero-dice__dot--1"></span>
+                <span class="hero-dice__dot hero-dice__dot--2"></span>
+                <span class="hero-dice__dot hero-dice__dot--3"></span>
+                <span class="hero-dice__dot hero-dice__dot--4"></span>
+                <span class="hero-dice__dot hero-dice__dot--5"></span>
+              </div>
+              <div class="hero-jenga">
+                <span class="hero-jenga__block hero-jenga__block--1"></span>
+                <span class="hero-jenga__block hero-jenga__block--2"></span>
+                <span class="hero-jenga__block hero-jenga__block--3"></span>
+                <span class="hero-jenga__block hero-jenga__block--4"></span>
+                <span class="hero-jenga__block hero-jenga__block--5"></span>
+                <span class="hero-jenga__block hero-jenga__block--6"></span>
+              </div>
+              <div class="hero-charades">
+                <span class="hero-charades__bubble">Act it out</span>
+                <span class="hero-charades__ticket">Charades</span>
+              </div>
+              <div class="hero-badge hero-badge--top">Cards</div>
+              <div class="hero-badge hero-badge--bottom">Jenga + Charades</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="event-flyers" class="event-flyers">
               <div class="section-heading">

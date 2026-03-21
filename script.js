@@ -237,6 +237,7 @@ const eventFlyers = [
 
 let pastMediaItems = [];
 let currentMediaIndex = 0;
+let lockedScrollY = 0;
 let activeMediaFilter = "all";
 /** When the lightbox is open, this is the list used for prev/next (flyers or past media). */
 let lightboxItems = [];
@@ -330,9 +331,26 @@ function setupCTAButtons() {
 }
 
 function setupNav() {
+  const header = document.querySelector(".site-header");
+  const navToggle = document.querySelector(".nav-toggle");
   const navLinks = document.querySelectorAll(".site-nav a");
 
   if (!navLinks.length) return;
+
+  function closeNavMenu() {
+    if (!header || !navToggle) return;
+    header.classList.remove("nav-open");
+    document.body.classList.remove("nav-open");
+    navToggle.setAttribute("aria-expanded", "false");
+  }
+
+  if (header && navToggle) {
+    navToggle.addEventListener("click", () => {
+      const isOpen = header.classList.toggle("nav-open");
+      document.body.classList.toggle("nav-open", isOpen);
+      navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  }
 
   navLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
@@ -342,6 +360,7 @@ function setupNav() {
       const destination = document.getElementById(targetId);
       if (!destination) return;
       event.preventDefault();
+      closeNavMenu();
       destination.scrollIntoView({ behavior: "smooth" });
     });
   });
@@ -1470,11 +1489,17 @@ function getFilteredMedia(filter) {
 }
 
 function lockBodyScroll() {
+  lockedScrollY = window.scrollY || window.pageYOffset || 0;
+  document.documentElement.classList.add("lightbox-open");
   document.body.classList.add("lightbox-open");
+  document.body.style.top = `-${lockedScrollY}px`;
 }
 
 function unlockBodyScroll() {
+  document.documentElement.classList.remove("lightbox-open");
   document.body.classList.remove("lightbox-open");
+  document.body.style.top = "";
+  window.scrollTo(0, lockedScrollY);
 }
 
 function setupLightbox() {
