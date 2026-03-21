@@ -227,7 +227,7 @@ const pastMedia = [
 ];
 
 const eventFlyers = [
-  // Five dedicated event flyers (as requested)
+  { type: "flyer", src: "brunch-sunday-flyer.png" },
   { type: "flyer", src: "IMG-20251011-WA0036.jpg" },
   { type: "flyer", src: "IMG-20251011-WA0037.jpg" },
   { type: "flyer", src: "IMG-20251011-WA0038.jpg" },
