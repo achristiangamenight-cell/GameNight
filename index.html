@@ -19,266 +19,289 @@
         <div class="tagline">A Christian Singles Group</div>
       </div>
       <nav class="site-nav">
+        <a href="#home-hero">Home</a>
+        <a href="#event-flyers">Event Flyers</a>
+        <a href="#team">Meet Our Team</a>
+        <a href="#about-us">About Us</a>
+        <a href="#past-events">Event Pictures / Videos</a>
         <a href="#anonymous-questions">Anonymous Comments / Questions / Topic</a>
         <a href="#survey">Rate Game Night</a>
-        <a href="#team">Meet the Team</a>
-        <a href="#event-flyers">Event Flyers</a>
-        <a href="#past-events">Event Pictures / Videos</a>
       </nav>
     </header>
 
     <main>
-      <section id="anonymous-questions" class="hero hero--anonymous">
-        <div class="hero-content">
-          <div class="checkin-card">
-            <h1>Anonymous Comments / Questions / Topic</h1>
-            <p class="forum-intro">Share a comment, question, or topic. Add a nickname and sign in to claim it and track your comments.</p>
-            <form id="anonymousQuestionForm" class="custom-anonymous-form">
-              <input type="hidden" id="anonymousParentId" name="parentId" value="" />
-              <div class="form-field">
-                <label for="anonymousNickname">Name / Nickname</label>
-                <input
-                  type="text"
-                  id="anonymousNickname"
-                  name="nickname"
-                  placeholder="e.g. GameNightFan"
-                  maxlength="60"
-                />
-              </div>
-              <div id="authClaimPrompt" class="auth-claim-prompt" aria-live="polite" hidden>
-                <p class="auth-claim-text">Log in to claim this nickname and track your comment.</p>
-                <div class="auth-buttons">
-                  <button type="button" id="authGoogleBtn" class="auth-btn auth-btn--google">Sign in with Google</button>
-                  <button type="button" id="authAppleBtn" class="auth-btn auth-btn--apple">Sign in with Apple</button>
+      <section id="home-hero" class="hero hero--landing">
+              <div class="hero-overlay"></div>
+              <div class="hero-content">
+                <div class="checkin-card landing-card">
+                  <h1>Christian Singles Game Night</h1>
+                  <p class="hero-subtitle">A fun, faith-centered community where single Christians connect, laugh, and build real friendships.</p>
+                  <div class="landing-cta-row">
+                    <a class="form-submit-btn landing-cta" href="#event-flyers">View Event Flyers</a>
+                    <a class="form-submit-btn landing-cta landing-cta--secondary" href="#anonymous-questions">Join The Discussion</a>
+                  </div>
                 </div>
               </div>
-              <div id="authStatus" class="auth-status" aria-live="polite" hidden>
-                <span id="authStatusText"></span>
-                <button type="button" id="authSignOutBtn" class="auth-sign-out">Sign out</button>
-              </div>
-              <div class="form-field">
-                <label for="anonymousQuestion">Comment / Question / Topic <span class="required">*</span></label>
-                <textarea
-                  id="anonymousQuestion"
-                  name="entry.111111111"
-                  rows="5"
-                  placeholder="Type your comment, question, or topic here..."
-                  required
-                ></textarea>
-              </div>
-              <div id="replyingTo" class="replying-to" aria-live="polite"></div>
-              <div class="form-status" id="anonymousFormStatus"></div>
-              <button type="submit" class="form-submit-btn" id="anonymousSubmitBtn">
-                Submit
-              </button>
-            </form>
-            <div class="discussion-toolbar">
-              <div class="discussion-tabs" role="tablist" aria-label="Sort discussions">
-                <button type="button" class="discussion-tab is-active" role="tab" aria-selected="true" data-sort="recent">Recent</button>
-                <button type="button" class="discussion-tab" role="tab" aria-selected="false" data-sort="recentCommented">Recent commented on</button>
-                <button type="button" class="discussion-tab" role="tab" aria-selected="false" data-sort="ranking">Highest ranking</button>
-              </div>
-              <label for="discussionSearch" class="discussion-search-label">Search discussions</label>
-              <input type="search" id="discussionSearch" class="discussion-search-input" placeholder="Search by nickname or text..." aria-label="Search discussions" />
-            </div>
-            <div id="anonymousCommentsList" class="comments-list" aria-label="Comment thread"></div>
-            <nav id="discussionPagination" class="discussion-pagination" aria-label="Discussion pages"></nav>
-          </div>
-        </div>
-      </section>
-
-      <section id="survey" class="survey">
-        <div class="section-heading">
-          <h2>Rate Game Night</h2>
-          <p>Share quick feedback to help us improve every Game Night.</p>
-        </div>
-        <div class="survey-content">
-          <p class="survey-intro">
-            Answer two quick questions, then leave suggestions for future events.
-          </p>
-          <form id="feedbackForm" class="custom-feedback-form">
-            <div class="form-field">
-              <label for="rating1">
-                Overall, how would you rate the latest Game Nights you attended?
-                <span class="required">*</span>
-              </label>
-              <div class="linear-scale">
-                <div class="scale-labels">
-                  <span class="scale-label-left">Very Poor</span>
-                  <span class="scale-label-right">Excellent</span>
-                </div>
-                <div class="scale-options">
-                  <label class="scale-option">
-                    <input type="radio" name="rating1" value="1" required />
-                    <span class="scale-number">1</span>
-                  </label>
-                  <label class="scale-option">
-                    <input type="radio" name="rating1" value="2" required />
-                    <span class="scale-number">2</span>
-                  </label>
-                  <label class="scale-option">
-                    <input type="radio" name="rating1" value="3" required />
-                    <span class="scale-number">3</span>
-                  </label>
-                  <label class="scale-option">
-                    <input type="radio" name="rating1" value="4" required />
-                    <span class="scale-number">4</span>
-                  </label>
-                  <label class="scale-option">
-                    <input type="radio" name="rating1" value="5" required />
-                    <span class="scale-number">5</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-field">
-              <label for="rating2">
-                How would you rate the games played during the event?
-                <span class="required">*</span>
-              </label>
-              <div class="linear-scale">
-                <div class="scale-labels">
-                  <span class="scale-label-left">Very Poor</span>
-                  <span class="scale-label-right">Excellent</span>
-                </div>
-                <div class="scale-options">
-                  <label class="scale-option">
-                    <input type="radio" name="rating2" value="1" required />
-                    <span class="scale-number">1</span>
-                  </label>
-                  <label class="scale-option">
-                    <input type="radio" name="rating2" value="2" required />
-                    <span class="scale-number">2</span>
-                  </label>
-                  <label class="scale-option">
-                    <input type="radio" name="rating2" value="3" required />
-                    <span class="scale-number">3</span>
-                  </label>
-                  <label class="scale-option">
-                    <input type="radio" name="rating2" value="4" required />
-                    <span class="scale-number">4</span>
-                  </label>
-                  <label class="scale-option">
-                    <input type="radio" name="rating2" value="5" required />
-                    <span class="scale-number">5</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-field">
-              <label for="comment">
-                Any suggestions or ideas for future events?
-              </label>
-              <textarea
-                id="comment"
-                name="comment"
-                rows="6"
-                placeholder="Share your feedback..."
-              ></textarea>
-            </div>
-
-            <div class="form-status" id="feedbackFormStatus"></div>
-            <button type="submit" class="form-submit-btn">
-              Submit Feedback
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <section id="team" class="team">
-        <div class="section-heading">
-          <h2>Meet Our Team</h2>
-          <p>From left to right: Oba, Lola, Tobi, David, Yeni, and Peggy. Team members missing in the photo: Gabi and Tomi.</p>
-        </div>
-
-        <div class="team-photo">
-          <img src="The%20team.jpg" alt="Christian Singles Game Night Team" />
-        </div>
-        <div class="about-us-details">
-          <p class="aboutLabel">ABOUT US:</p>
-          <p class="aboutText">We're Single Christians looking to foster an environment where other Christian Singles can connect.</p>
-          <p class="aboutLabel">OBJECTIVE/MISSION:</p>
-          <p class="aboutText">To provide a welcoming, faith-centered and judgment-free community for single adults to mingle and build meaningful relationships. A space where we can have mature conversations and create connections.</p>
-          <div class="about-us-values">
-            <p><strong>Core values</strong></p>
-            <ul class="coreValues">
-              <li>Community</li>
-              <li>Non-judgment</li>
-              <li>Vulnerability</li>
-              <li>Compassion</li>
-              <li>Engaging</li>
-            </ul>
-          </div>
-        </div>
-        <div class="cta-whatsapp-panel">
-          <p class="cta-whatsapp">
-            To stay informed about our Upcoming GAME NIGHTS.<br><br>
-            Mingle and chat with like minded singles as we discuss real life, current, and sometimes controversial questions about Christian dating and relationships.
-          </p>
-          <a
-            class="cta-whatsapp__button"
-            href="https://chat.whatsapp.com/ITHfVEvhFKP0XR8xdjWAPD"
-            target="_blank"
-            rel="noopener"
-          >
-            Join our 150 members WhatsApp group
-          </a>
-        </div>
-      </section>
+            </section>
 
       <section id="event-flyers" class="event-flyers">
-        <div class="section-heading">
-          <h2>Event Flyers</h2>
-          <p>Swipe through flyers from our past and upcoming Christian Singles Game Nights.</p>
-        </div>
+              <div class="section-heading">
+                <h2>Event Flyers</h2>
+                <p>Swipe through flyers from our past and upcoming Christian Singles Game Nights.</p>
+              </div>
+      
+              <div class="flyer-carousel">
+                <button
+                  class="flyer-carousel__nav flyer-carousel__nav--prev"
+                  type="button"
+                  aria-label="Previous event flyer"
+                ></button>
+      
+                <div
+                  class="flyer-carousel__track"
+                  id="eventFlyersGrid"
+                  aria-live="polite"
+                ></div>
+      
+                <button
+                  class="flyer-carousel__nav flyer-carousel__nav--next"
+                  type="button"
+                  aria-label="Next event flyer"
+                ></button>
+              </div>
+      
+              <div
+                class="flyer-carousel__dots"
+                id="eventFlyersDots"
+                aria-hidden="true"
+              ></div>
+            </section>
 
-        <div class="flyer-carousel">
-          <button
-            class="flyer-carousel__nav flyer-carousel__nav--prev"
-            type="button"
-            aria-label="Previous event flyer"
-          ></button>
+      <section id="team" class="team">
+              <div class="section-heading">
+                <h2>Meet Our Team</h2>
+                <p>From left to right: Oba, Lola, Tobi, David, Yeni, and Peggy. Team members missing in the photo: Gabi and Tomi.</p>
+              </div>
+      
+              <div class="team-photo">
+                <img src="The%20team.jpg" alt="Christian Singles Game Night Team" />
+              </div>
+              <div class="cta-whatsapp-panel">
+                <p class="cta-whatsapp">
+                  To stay informed about our Upcoming GAME NIGHTS.<br><br>
+                  Mingle and chat with like minded singles as we discuss real life, current, and sometimes controversial questions about Christian dating and relationships.
+                </p>
+                <a
+                  class="cta-whatsapp__button"
+                  href="https://chat.whatsapp.com/ITHfVEvhFKP0XR8xdjWAPD"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Join our 150 members WhatsApp group
+                </a>
+              </div>
+            </section>
 
-          <div
-            class="flyer-carousel__track"
-            id="eventFlyersGrid"
-            aria-live="polite"
-          ></div>
-
-          <button
-            class="flyer-carousel__nav flyer-carousel__nav--next"
-            type="button"
-            aria-label="Next event flyer"
-          ></button>
-        </div>
-
-        <div
-          class="flyer-carousel__dots"
-          id="eventFlyersDots"
-          aria-hidden="true"
-        ></div>
-      </section>
+      <section id="about-us" class="about-us">
+              <div class="section-heading">
+                <h2>About Us</h2>
+                <p>Our mission and values as a Christian Singles community.</p>
+              </div>
+              <div class="about-us-details">
+                <p class="aboutLabel">ABOUT US:</p>
+                <p class="aboutText">We're Single Christians looking to foster an environment where other Christian Singles can connect.</p>
+                <p class="aboutLabel">OBJECTIVE/MISSION:</p>
+                <p class="aboutText">To provide a welcoming, faith-centered and judgment-free community for single adults to mingle and build meaningful relationships. A space where we can have mature conversations and create connections.</p>
+                <div class="about-us-values">
+                  <p><strong>Core values</strong></p>
+                  <ul class="coreValues">
+                    <li>Community</li>
+                    <li>Non-judgment</li>
+                    <li>Vulnerability</li>
+                    <li>Compassion</li>
+                    <li>Engaging</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
 
       <section id="past-events" class="past-events">
-        <div class="section-heading">
-          <h2>Event Pictures / Videos</h2>
-          <p>Highlights from recent game nights.</p>
-        </div>
-        <div class="media-tabs" role="tablist" aria-label="Event Pictures / Videos media filter">
-          <button class="media-tab is-active" type="button" role="tab" aria-selected="true" data-filter="all">
-            All
-          </button>
-          <button class="media-tab" type="button" role="tab" aria-selected="false" data-filter="photos">
-            Photos
-          </button>
-          <button class="media-tab" type="button" role="tab" aria-selected="false" data-filter="videos">
-            Videos
-          </button>
-        </div>
-        <div class="media-grid" id="pastMediaGrid"></div>
-      </section>
+              <div class="section-heading">
+                <h2>Event Pictures / Videos</h2>
+                <p>Highlights from recent game nights.</p>
+              </div>
+              <div class="media-tabs" role="tablist" aria-label="Event Pictures / Videos media filter">
+                <button class="media-tab is-active" type="button" role="tab" aria-selected="true" data-filter="all">
+                  All
+                </button>
+                <button class="media-tab" type="button" role="tab" aria-selected="false" data-filter="photos">
+                  Photos
+                </button>
+                <button class="media-tab" type="button" role="tab" aria-selected="false" data-filter="videos">
+                  Videos
+                </button>
+              </div>
+              <div class="media-grid" id="pastMediaGrid"></div>
+            </section>
+
+      <section id="anonymous-questions" class="hero hero--anonymous">
+              <div class="hero-content">
+                <div class="checkin-card">
+                  <h1>Anonymous Comments / Questions / Topic</h1>
+                  <p class="forum-intro">Share a comment, question, or topic. Add a nickname and sign in to claim it and track your comments.</p>
+                  <form id="anonymousQuestionForm" class="custom-anonymous-form">
+                    <input type="hidden" id="anonymousParentId" name="parentId" value="" />
+                    <div class="form-field">
+                      <label for="anonymousNickname">Name / Nickname</label>
+                      <input
+                        type="text"
+                        id="anonymousNickname"
+                        name="nickname"
+                        placeholder="e.g. GameNightFan"
+                        maxlength="60"
+                      />
+                    </div>
+                    <div id="authClaimPrompt" class="auth-claim-prompt" aria-live="polite" hidden>
+                      <p class="auth-claim-text">Log in to claim this nickname and track your comment.</p>
+                      <div class="auth-buttons">
+                        <button type="button" id="authGoogleBtn" class="auth-btn auth-btn--google">Sign in with Google</button>
+                        <button type="button" id="authAppleBtn" class="auth-btn auth-btn--apple">Sign in with Apple</button>
+                      </div>
+                    </div>
+                    <div id="authStatus" class="auth-status" aria-live="polite" hidden>
+                      <span id="authStatusText"></span>
+                      <button type="button" id="authSignOutBtn" class="auth-sign-out">Sign out</button>
+                    </div>
+                    <div class="form-field">
+                      <label for="anonymousQuestion">Comment / Question / Topic <span class="required">*</span></label>
+                      <textarea
+                        id="anonymousQuestion"
+                        name="entry.111111111"
+                        rows="5"
+                        placeholder="Type your comment, question, or topic here..."
+                        required
+                      ></textarea>
+                    </div>
+                    <div id="replyingTo" class="replying-to" aria-live="polite"></div>
+                    <div class="form-status" id="anonymousFormStatus"></div>
+                    <button type="submit" class="form-submit-btn" id="anonymousSubmitBtn">
+                      Submit
+                    </button>
+                  </form>
+                  <div class="discussion-toolbar">
+                    <div class="discussion-tabs" role="tablist" aria-label="Sort discussions">
+                      <button type="button" class="discussion-tab is-active" role="tab" aria-selected="true" data-sort="recent">Recent</button>
+                      <button type="button" class="discussion-tab" role="tab" aria-selected="false" data-sort="recentCommented">Recent commented on</button>
+                      <button type="button" class="discussion-tab" role="tab" aria-selected="false" data-sort="ranking">Highest ranking</button>
+                    </div>
+                    <label for="discussionSearch" class="discussion-search-label">Search discussions</label>
+                    <input type="search" id="discussionSearch" class="discussion-search-input" placeholder="Search by nickname or text..." aria-label="Search discussions" />
+                  </div>
+                  <div id="anonymousCommentsList" class="comments-list" aria-label="Comment thread"></div>
+                  <nav id="discussionPagination" class="discussion-pagination" aria-label="Discussion pages"></nav>
+                </div>
+              </div>
+            </section>
+
+      <section id="survey" class="survey">
+              <div class="section-heading">
+                <h2>Rate Game Night</h2>
+                <p>Share quick feedback to help us improve every Game Night.</p>
+              </div>
+              <div class="survey-content">
+                <p class="survey-intro">
+                  Answer two quick questions, then leave suggestions for future events.
+                </p>
+                <form id="feedbackForm" class="custom-feedback-form">
+                  <div class="form-field">
+                    <label for="rating1">
+                      Overall, how would you rate the latest Game Nights you attended?
+                      <span class="required">*</span>
+                    </label>
+                    <div class="linear-scale">
+                      <div class="scale-labels">
+                        <span class="scale-label-left">Very Poor</span>
+                        <span class="scale-label-right">Excellent</span>
+                      </div>
+                      <div class="scale-options">
+                        <label class="scale-option">
+                          <input type="radio" name="rating1" value="1" required />
+                          <span class="scale-number">1</span>
+                        </label>
+                        <label class="scale-option">
+                          <input type="radio" name="rating1" value="2" required />
+                          <span class="scale-number">2</span>
+                        </label>
+                        <label class="scale-option">
+                          <input type="radio" name="rating1" value="3" required />
+                          <span class="scale-number">3</span>
+                        </label>
+                        <label class="scale-option">
+                          <input type="radio" name="rating1" value="4" required />
+                          <span class="scale-number">4</span>
+                        </label>
+                        <label class="scale-option">
+                          <input type="radio" name="rating1" value="5" required />
+                          <span class="scale-number">5</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+      
+                  <div class="form-field">
+                    <label for="rating2">
+                      How would you rate the games played during the event?
+                      <span class="required">*</span>
+                    </label>
+                    <div class="linear-scale">
+                      <div class="scale-labels">
+                        <span class="scale-label-left">Very Poor</span>
+                        <span class="scale-label-right">Excellent</span>
+                      </div>
+                      <div class="scale-options">
+                        <label class="scale-option">
+                          <input type="radio" name="rating2" value="1" required />
+                          <span class="scale-number">1</span>
+                        </label>
+                        <label class="scale-option">
+                          <input type="radio" name="rating2" value="2" required />
+                          <span class="scale-number">2</span>
+                        </label>
+                        <label class="scale-option">
+                          <input type="radio" name="rating2" value="3" required />
+                          <span class="scale-number">3</span>
+                        </label>
+                        <label class="scale-option">
+                          <input type="radio" name="rating2" value="4" required />
+                          <span class="scale-number">4</span>
+                        </label>
+                        <label class="scale-option">
+                          <input type="radio" name="rating2" value="5" required />
+                          <span class="scale-number">5</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+      
+                  <div class="form-field">
+                    <label for="comment">
+                      Any suggestions or ideas for future events?
+                    </label>
+                    <textarea
+                      id="comment"
+                      name="comment"
+                      rows="6"
+                      placeholder="Share your feedback..."
+                    ></textarea>
+                  </div>
+      
+                  <div class="form-status" id="feedbackFormStatus"></div>
+                  <button type="submit" class="form-submit-btn">
+                    Submit Feedback
+                  </button>
+                </form>
+              </div>
+            </section>
     </main>
 
     <footer class="site-footer">
@@ -302,7 +325,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js" defer></script>
     <script src="firebase-comments.js" defer></script>
-    <script src="script.js?v=2.3" defer></script>
+    <script src="script.js?v=2.4" defer></script>
   </body>
 </html>
 

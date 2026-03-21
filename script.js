@@ -679,11 +679,12 @@ function submitForm(userInput) {
     });
 }
 
-const ANONYMOUS_COMMENTS_KEY = "gameNightAnonymousComments";
+const ANONYMOUS_COMMENTS_KEY = "gameNightAnonymousComments-v2";
 const DISCUSSION_PAGE_SIZE = 5;
 window.__discussionPage = 1;
 window.__discussionSortMode = "recent";
 window.__lastDiscussionList = [];
+const REMOVED_DISCUSSION_TEXTS = ["testing testing", "new test"];
 
 function getDiscussionGuestId() {
   try {
@@ -700,7 +701,15 @@ function getDiscussionGuestId() {
 function getAnonymousComments() {
   try {
     const raw = localStorage.getItem(ANONYMOUS_COMMENTS_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const comments = raw ? JSON.parse(raw) : [];
+    const filteredComments = comments.filter((comment) => {
+      const normalizedText = ((comment && comment.text) || "").trim().toLowerCase();
+      return !REMOVED_DISCUSSION_TEXTS.some((text) => normalizedText.includes(text));
+    });
+    if (filteredComments.length !== comments.length) {
+      localStorage.setItem(ANONYMOUS_COMMENTS_KEY, JSON.stringify(filteredComments));
+    }
+    return filteredComments;
   } catch {
     return [];
   }
