@@ -955,7 +955,6 @@ function setupAnonymousQuestionForm() {
   const anonymousForm = document.getElementById("anonymousQuestionForm");
   const formStatus = document.getElementById("anonymousFormStatus");
   const submitButton = anonymousForm?.querySelector('button[type="submit"]');
-  const nicknameInput = document.getElementById("anonymousNickname");
   const textarea = document.getElementById("anonymousQuestion");
   const parentInput = document.getElementById("anonymousParentId");
   const replyingToEl = document.getElementById("replyingTo");
@@ -1045,7 +1044,6 @@ function setupAnonymousQuestionForm() {
     if (isLoading) return;
     isLoading = true;
 
-    const nickname = (nicknameInput?.value || "").trim();
     const userInput = (textarea?.value || "").trim();
     const parentId = (parentInput?.value || "").trim();
 
@@ -1059,13 +1057,6 @@ function setupAnonymousQuestionForm() {
     }
 
     const useFirebase = window.CommentsAuth && window.CommentsAuth.isConfigured && window.CommentsAuth.isConfigured();
-    if (useFirebase) {
-      if (nickname.length > 0 && !window.CommentsAuth.getCurrentUser()) {
-        showStatus("Log in to claim this nickname and track your comment.", false);
-        isLoading = false;
-        return;
-      }
-    }
 
     if (submitButton) {
       submitButton.disabled = true;
@@ -1088,9 +1079,9 @@ function setupAnonymousQuestionForm() {
 
     try {
       if (useFirebase) {
-        await window.CommentsAuth.submitComment({ nickname, text: userInput, parentId: parentId || null });
+        await window.CommentsAuth.submitComment({ text: userInput, parentId: parentId || null });
       } else {
-        const displayName = nickname || "Anonymous";
+        const displayName = "Anonymous";
         const comments = getAnonymousComments();
         const parentComment = parentId ? comments.find((c) => c.id === parentId) : null;
         const payloadForApi = parentComment
@@ -1123,7 +1114,7 @@ function setupAnonymousQuestionForm() {
         submitButton.textContent = "Submit";
       }
 
-      showStatus(nickname ? "✓ Your comment was posted. You can find it below by your nickname." : "✓ Your comment was posted as Anonymous.", false);
+      showStatus("✓ Your comment was posted anonymously.", false);
 
       setTimeout(() => {
         if (formStatus) {

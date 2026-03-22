@@ -160,11 +160,11 @@ main {
 }
 
 #home-hero { order: 1; }
-#event-flyers { order: 2; }
-#team { order: 3; }
-#about-us { order: 4; }
-#past-events { order: 5; }
-#anonymous-questions { order: 6; }
+#anonymous-questions { order: 2; }
+#event-flyers { order: 3; }
+#team { order: 4; }
+#about-us { order: 5; }
+#past-events { order: 6; }
 #survey { order: 7; }
 
 .hero--landing {
